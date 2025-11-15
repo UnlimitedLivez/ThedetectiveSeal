@@ -897,6 +897,183 @@ button.playing {
   document.querySelectorAll('.visualizer').forEach(c => c.style.display = 'none');
 })();
 </script>
+<script>
+(() => {
+  const playBtns = document.querySelectorAll('.play-btn');
+  let audioCtx = null;
+  let currentAudio = null;
+  let currentSource = null;
+  let currentAnalyser = null;
+  let currentCanvas = null;
+  let drawRaf = null;
+  let isPlaying = false;
+
+  async function ensureAudioContext() {
+    if (!audioCtx || audioCtx.state === 'closed') {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      try { await audioCtx.resume(); } catch {}
+    }
+    return audioCtx;
+  }
+
+  function stopCurrent() {
+    if (currentSource) {
+      try { currentSource.stop(0); } catch {}
+      try { currentSource.disconnect(); } catch {}
+      currentSource = null;
+    }
+    if (currentAnalyser) {
+      try { currentAnalyser.disconnect(); } catch {}
+      currentAnalyser = null;
+    }
+    if (currentAudio && !currentAudio.paused) currentAudio.pause();
+    if (drawRaf) cancelAnimationFrame(drawRaf);
+    drawRaf = null;
+    currentAudio = null;
+    currentCanvas = null;
+    isPlaying = false;
+    document.querySelectorAll('.visualizer').forEach(c => c.style.display = 'none');
+    document.querySelectorAll('.play-btn').forEach(b => b.classList.remove('playing'));
+  }
+
+  function prepareCanvas(canvas) {
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+    canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    return ctx;
+  }
+
+  function drawCenteredBars(analyser, canvas) {
+    const ctx = prepareCanvas(canvas);
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    let hue = 0;
+
+    function loop() {
+      drawRaf = requestAnimationFrame(loop);
+      analyser.getByteFrequencyData(dataArray);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255,255,255,0.02)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const barWidth = 10;
+      const gap = 5;
+      const totalWidth = bufferLength * (barWidth + gap);
+      const startX = (canvas.width / (window.devicePixelRatio || 1) - totalWidth) / 2;
+      let x = startX;
+
+      hue = (hue + 1) % 360;
+      const isHovered = canvas.matches(':hover');
+
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i];
+        const h = (v / 255) * (canvas.height / (window.devicePixelRatio || 1) - 8);
+        ctx.fillStyle = isHovered ? `hsl(${(hue + i * 20) % 360},100%,50%)` : '#38e3be';
+        ctx.fillRect(x, (canvas.height / (window.devicePixelRatio || 1)) - h - 2, barWidth, h);
+        x += barWidth + gap;
+      }
+    }
+    loop();
+  }
+
+  async function fetchAndPlay(url, button, canvas) {
+    try {
+      await ensureAudioContext();
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`Fetch HTTP ${res.status}`);
+      const arrayBuffer = await res.arrayBuffer();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+      stopCurrent();
+
+      const src = audioCtx.createBufferSource();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 32;
+
+      src.buffer = audioBuffer;
+      src.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      button.classList.add('playing');
+      canvas.style.display = 'block';
+
+      src.start(0);
+      currentSource = src;
+      currentAnalyser = analyser;
+      currentCanvas = canvas;
+      isPlaying = true;
+
+      drawCenteredBars(analyser, canvas);
+      src.onended = stopCurrent;
+      return true;
+    } catch (err) {
+      console.error('fetchAndPlay error:', err);
+      return false;
+    }
+  }
+
+  async function fallbackPlay(audioEl, button, canvas) {
+    try {
+      await ensureAudioContext();
+
+      // Only create MediaElementSource once
+      if (!audioEl._source) {
+        const src = audioCtx.createMediaElementSource(audioEl);
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        src.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        audioEl._source = { src, analyser };
+      }
+
+      stopCurrent();
+      currentAudio = audioEl;
+      currentAnalyser = audioEl._source.analyser;
+      currentCanvas = canvas;
+      canvas.style.display = 'block';
+      button.classList.add('playing');
+
+      await audioEl.play().catch(err => {
+        if (err.name !== 'AbortError') console.error('fallbackPlay play error:', err);
+      });
+
+      drawCenteredBars(currentAnalyser, canvas);
+
+      audioEl.onended = stopCurrent;
+      isPlaying = true;
+      return true;
+    } catch (err) {
+      console.error('fallbackPlay error:', err);
+      return false;
+    }
+  }
+
+  playBtns.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const audioId = btn.dataset.audio;
+      const visId = btn.dataset.vis;
+      const audioEl = document.getElementById(audioId);
+      const canvas = document.getElementById(visId);
+
+      if (isPlaying && currentCanvas === canvas) {
+        stopCurrent();
+        return;
+      }
+
+      const url = audioEl.src;
+      let ok = await fetchAndPlay(url, btn, canvas);
+      if (!ok) await fallbackPlay(audioEl, btn, canvas);
+    });
+  });
+
+  document.querySelectorAll('.visualizer').forEach(c => c.style.display = 'none');
+})();
+</script>
 
 
 </body>
