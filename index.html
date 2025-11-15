@@ -217,17 +217,17 @@ button.playing {
 </div>
 
 <!-- Modals -->
-<div id="modal1" class="modal"><div class="modal-content"><p>Racing stuff goes here.</p><button class="close-modal">Close</button></div></div>
-<div id="modal2" class="modal"><div class="modal-content"><p>Seals stuff goes here.</p><button class="close-modal">Close</button></div></div>
-<div id="modal3" class="modal"><div class="modal-content"><p>More seals here.</p><button class="close-modal">Close</button></div></div>
+<div id="modal1" class="modal"><div class="modal-content"><p>Some racing thingys i like (series) are Nascar (NO ITS NOT JUST CARS GOING IN CIRCLES) F1, GT3, WEC, WRC, Endurance etc etc rx7 fc</p><button class="close-modal">Close</button></div></div>
+<div id="modal2" class="modal"><div class="modal-content"><p>so like theres many species of seals, like the um, the um erm um species. Harp Ringed Harbor, Monk, theres more if u want to search it up </p><button class="close-modal">Close</button></div></div>
+<div id="modal3" class="modal"><div class="modal-content"><p>niko (in my opinion) is the best seal, followed by kroshik, then yuki, then yo-chan, but all seals are COOL</p><button class="close-modal">Close</button></div></div>
 
 <!-- Audio elements -->
 <audio id="song1" src="finale.mp3" preload="auto"></audio>
 <audio id="song2" src="funky.mp3" preload="auto"></audio>
 
 <!-- Sticky notes -->
-<div class="sticky-note" id="note1">Add your comment here</div>
-<div class="sticky-note" id="note2">Another comment here</div>
+<div class="sticky-note" id="note1">Made by TheDetectiveSeal</div>
+<div class="sticky-note" id="note2">i like seals</div>
 
 <!-- No animations toggle -->
 <button id="toggle-animations" style="position:fixed;top:10px;right:10px;z-index:10001;">No animations</button>
@@ -763,6 +763,31 @@ button.playing {
     }
     loop();
   };
+})();
+</script>
+<script>
+(() => {
+  // --- Keyboard secret code to show sticky notes ---
+  const secretCode = ['s','e','a','l'];
+  let codeIndex = 0;
+
+  window.addEventListener('keydown', e => {
+    const key = e.key.toLowerCase();
+    if (key === secretCode[codeIndex]) {
+      codeIndex++;
+      if (codeIndex === secretCode.length) {
+        // Reveal sticky notes
+        document.querySelectorAll('.sticky-note').forEach(note => note.style.display = 'block');
+        codeIndex = 0; // reset code sequence
+      }
+    } else {
+      codeIndex = 0; // reset if wrong key
+    }
+  });
+
+  // --- Initially hide sticky notes for this secret feature ---
+  document.querySelectorAll('.sticky-note').forEach(note => note.style.display = 'none');
+
 })();
 </script>
 
