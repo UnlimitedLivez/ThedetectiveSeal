@@ -491,9 +491,35 @@ audioEl.onended = () => {
       }
     });
     shuffleBtn.addEventListener("click", () => {
-      const random = Math.floor(Math.random() * playBtns.length);
-      playIndex(random);
-    });
+  // Get all play buttons and their canvases
+  const items = [];
+  playBtns.forEach(btn => {
+    const canvas = document.getElementById(btn.dataset.vis);
+    items.push({ btn, canvas });
+  });
+
+  // Shuffle array
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+
+  // Clear old order in DOM
+  const controlsBottom = document.querySelector(".controls-bottom");
+  items.forEach(({ btn, canvas }) => {
+    playlistContainer.insertBefore(btn, controlsBottom);
+    playlistContainer.insertBefore(canvas, controlsBottom);
+  });
+
+  // Update playBtns array to new order
+  playBtns.length = 0;
+  items.forEach(({ btn }) => playBtns.push(btn));
+
+  // Reset current index so playback follows new order
+  currentIndex = -1;
+  stopAll();
+});
+
 
     // Live theme switching: re-render current visualizer with new theme
     themeSelector.addEventListener("change", () => {
