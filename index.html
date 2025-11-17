@@ -559,5 +559,34 @@
       });
     })();
   </script>
+  <script>
+  (() => {
+    // Track what the user types
+    let typed = "";
+
+    window.addEventListener("keydown", (e) => {
+      // Add the pressed key to the buffer
+      typed += e.key.toLowerCase();
+
+      // Keep only the last 10 characters
+      if (typed.length > 10) {
+        typed = typed.slice(-10);
+      }
+
+      // Check for the secret code
+      if (typed.includes("seal")) {
+        // Show sticky notes
+        document.querySelectorAll(".sticky-note").forEach(note => {
+          note.style.display = "block";
+        });
+      }
+    });
+
+    // Hide sticky notes initially
+    document.querySelectorAll(".sticky-note").forEach(note => {
+      note.style.display = "none";
+    });
+  })();
+</script>
 </body>
 </html>
