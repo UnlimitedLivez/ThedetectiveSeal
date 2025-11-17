@@ -1,169 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Detectified</title>
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;400;700&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      margin: 0;
-      font-family: "Exo 2", sans-serif;
-      background: url("https://i.imgur.com/ol1MfVj.gif") no-repeat center center fixed;
-      background-size: cover;
-      color: black;
-      cursor: url('https://i.imgur.com/4b7KkzM.png') 16 16, auto;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Detectified</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;400;700&display=swap" rel="stylesheet" />
+<style>
+  body {
+    margin: 0;
+    font-family: "Exo 2", sans-serif;
+    background: url("https://i.imgur.com/ol1MfVj.gif") no-repeat center center fixed;
+    background-size: cover;
+    color: black;
+    cursor: url('https://i.imgur.com/4b7KkzM.png') 16 16, auto;
+  }
 
-    .fluidjumbo {
-      background-color: #38e3be2f;
-      backdrop-filter: blur(10px);
-      padding: 25px;
-      border-radius: 25px;
-      text-align: center;
-      margin: 20px auto;
-      max-width: 90%;
-    }
+  /* Theme variables */
+  body.blue-theme {
+    --accent: #38e3be; /* neon teal-blue */
+    --bg-card: linear-gradient(rgba(229,235,234,0.6), rgba(143,143,143,0.6));
+  }
+  body.light-theme {
+    --accent: #0077ff; /* lighter blue */
+    --bg-card: linear-gradient(rgba(255,255,255,0.9), rgba(200,200,200,0.9));
+  }
 
-    .cards-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      justify-items: center;
-      padding: 10px;
-      margin-bottom: 180px; /* space for fixed music card */
-    }
+  .fluidjumbo {
+    background-color: var(--accent);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 25px;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 90%;
+    color: white;
+  }
 
-    .card {
-      background: linear-gradient(rgba(229, 235, 234, 0.5), rgba(143, 143, 143, 0.5));
-      border: 3px inset #ffffff9a;
-      border-radius: 25px;
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-      padding: 15px;
-      box-shadow: 0 0 30px #38e3be;
-      backdrop-filter: blur(5px);
-      position: relative;
-    }
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-items: center;
+    padding: 10px;
+    margin-bottom: 200px; /* space for fixed music card */
+  }
 
-    .img-wrap { display: inline-block; transition: transform 0.4s ease; }
-    .img-wrap:hover { transform: rotate(360deg) scale(1.1); }
-    .card img { width: 200px; height: 200px; border-radius: 30px; display: block; }
+  .card {
+    background: var(--bg-card);
+    border: 3px inset #ffffff9a;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 0 30px var(--accent);
+    backdrop-filter: blur(5px);
+    position: relative;
+  }
 
-    button {
-      display: block;
-      margin: 6px auto;
-      border-radius: 20px;
-      padding: 6px 14px;
-      border: 2px solid #38e3be;
-      background: rgba(255, 255, 255, 0.2);
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-    button:hover { transform: scale(1.05); box-shadow: 0 0 15px #38e3be; }
-    button.playing { box-shadow: 0 0 20px #38e3be; }
+  .img-wrap { display: inline-block; transition: transform 0.4s ease; }
+  .img-wrap:hover { transform: rotate(360deg) scale(1.1); }
+  .card img { width: 200px; height: 200px; border-radius: 30px; display: block; }
 
-    /* Music card pinned to bottom, compact */
-    .card.music {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      max-width: none;
-      border-radius: 0;
-      box-shadow: 0 -2px 20px #38e3be;
-      z-index: 9999;
-      padding: 6px 10px;   /* compact padding */
-      max-height: 160px;   /* shorter overall height */
-      overflow-y: auto;    /* scroll if content exceeds */
-      background: linear-gradient(rgba(229, 235, 234, 0.6), rgba(143, 143, 143, 0.6));
-      backdrop-filter: blur(8px);
-    }
+  button {
+    display: block; margin: 6px auto;
+    border-radius: 20px; padding: 6px 14px;
+    border: 2px solid var(--accent);
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer; transition: 0.3s ease;
+    color: black;
+  }
+  button:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent); }
+  button.playing { box-shadow: 0 0 20px var(--accent); }
 
-    .card.music h2 {
-      margin: 0 0 4px 0;
-      font-size: 1em;
-    }
+  /* Music card pinned to bottom, compact */
+  .card.music {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: 0 -2px 20px var(--accent);
+    z-index: 9999;
+    padding: 6px 10px;   /* compact padding */
+    max-height: 220px;   /* taller for added controls */
+    overflow-y: auto;    /* scroll if content exceeds */
+    background: var(--bg-card);
+    backdrop-filter: blur(8px);
+  }
+  .card.music h2 { margin: 0 0 4px 0; font-size: 1em; }
 
-    .visualizer {
-      width: 100%;
-      height: 40px;        /* reduced height */
-      display: none;
-      margin-top: 4px;
-      background: #111;
-    }
+  .visualizer {
+    width: 100%;
+    height: 40px;        /* reduced height */
+    display: none;
+    margin-top: 4px;
+    background: #111;
+  }
 
-    .controls-top {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 4px;
-    }
-    .controls-bottom {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 4px;
-    }
-    #themeSelector {
-      border-radius: 20px;
-      padding: 4px 10px;
-      border: 2px solid #38e3be;
-      background: rgba(255,255,255,0.85);
-      font-family: "Exo 2", sans-serif;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    #themeSelector:hover { box-shadow: 0 0 10px #38e3be; }
+  .controls-top, .controls-bottom {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 4px 0;
+    flex-wrap: wrap;
+  }
 
-    /* Sticky notes (hidden until unlock), draggable */
-    .sticky-note {
-      position: fixed;
-      bottom: 100px; /* above the music bar */
-      left: 10px;
-      background: #fff9c4;
-      color: #333;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-      font-family: "Exo 2", sans-serif;
-      cursor: move;
-      z-index: 10000;
-      max-width: 220px;
-      display: none;
-      user-select: none;
-    }
-    .sticky-note#note2 { left: 240px; }
+  #themeSelector, #volumeSlider {
+    border-radius: 20px; padding: 4px 10px;
+    border: 2px solid var(--accent);
+    background: rgba(255,255,255,0.85);
+    font-family: "Exo 2", sans-serif;
+    cursor: pointer; transition: 0.3s;
+  }
+  #themeSelector:hover, #volumeSlider:hover { box-shadow: 0 0 10px var(--accent); }
 
-    /* Modals */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      max-width: 420px;
-    }
+  /* Progress bar */
+  #progressContainer {
+    width: 90%; margin: 4px auto 6px;
+    height: 6px; background: #ccc;
+    border-radius: 3px; cursor: pointer;
+    position: relative;
+  }
+  #progressBar {
+    height: 100%; width: 0%;
+    background: var(--accent);
+    border-radius: 3px;
+  }
 
-    /* No animations toggle: disable float/flip only, keep hover effects */
-    .no-animations .card { animation: none !important; transition: none !important; }
-    .no-animations .card.flip { transform: none !important; }
+  /* Track info */
+  #trackInfo {
+    text-align: center;
+    font-size: 0.9em;
+    color: black;
+    margin-bottom: 2px;
+  }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .cards-container { grid-template-columns: 1fr; }
-      .card img { width: 150px; height: 150px; }
-    }
-  </style>
+  /* Sticky notes (hidden until unlock), draggable */
+  .sticky-note {
+    position: fixed;
+    bottom: 100px; /* above the music bar */
+    left: 10px;
+    background: #fff9c4;
+    color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    font-family: "Exo 2", sans-serif;
+    cursor: move;
+    z-index: 10000;
+    max-width: 220px;
+    display: none;
+    user-select: none;
+  }
+  .sticky-note#note2 { left: 240px; }
+
+  /* Modals */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 420px;
+  }
+
+  /* No animations toggle: disable float/flip only, keep hover effects */
+  .no-animations .card { animation: none !important; transition: none !important; }
+  .no-animations .card.flip { transform: none !important; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .cards-container { grid-template-columns: 1fr; }
+    .card img { width: 150px; height: 150px; }
+  }
+</style>
 </head>
-<body>
+<body class="blue-theme">
   <div class="fluidjumbo">
     <h1>The (maybe detective) seal's portfolio</h1>
     <p>About me is below</p>
@@ -195,6 +216,11 @@
   <!-- Music card pinned to bottom -->
   <div class="card music">
     <h2>Music</h2>
+
+    <!-- Track info and progress -->
+    <div id="trackInfo"></div>
+    <div id="progressContainer"><div id="progressBar"></div></div>
+
     <div id="playlist-container">
       <div class="controls-top">
         <select id="themeSelector" title="Visualizer theme">
@@ -202,6 +228,9 @@
           <option value="circle">Circle</option>
           <option value="wave">Wave</option>
         </select>
+
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1" />
+        <button id="muteBtn">Mute</button>
       </div>
 
       <!-- Playlist items will be injected here -->
@@ -210,6 +239,7 @@
         <button id="prevBtn">Prev</button>
         <button id="nextBtn">Next</button>
         <button id="shuffleBtn">Shuffle</button>
+        <button id="themeToggle">Toggle Theme</button>
       </div>
     </div>
   </div>
@@ -235,6 +265,12 @@
     const shuffleBtn = document.getElementById("shuffleBtn");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
+    const themeToggle = document.getElementById("themeToggle");
+    const trackInfo = document.getElementById("trackInfo");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBar = document.getElementById("progressBar");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const muteBtn = document.getElementById("muteBtn");
 
     // Playlist array (one source of truth)
     let playlist = [
@@ -244,6 +280,12 @@
       { id: "song5", title: "Mirrors demo", src: "mirror.mp3" }
     ];
 
+    // Secret track definitions (not added initially)
+    const secretTracks = {
+      seal: { id: "smooth-audio", title: "Smooth Operator", src: "smooth.mp3" },
+      sexy: { id: "sexy-audio", title: "Sexy Back", src: "sexy.mp3" }
+    };
+
     // Runtime state
     let playBtns = [];
     let audioCtx = null;
@@ -252,6 +294,7 @@
     let currentAudio = null;
     let currentCanvas = null;
     let drawRaf = null;
+    let wasMuted = false;
 
     // Ensure Web Audio context
     async function ensureCtx() {
@@ -368,6 +411,8 @@
       }
       currentAudio = null;
       currentCanvas = null;
+      trackInfo.textContent = "";
+      progressBar.style.width = "0%";
     }
 
     function stopAll() {
@@ -470,6 +515,16 @@
       currentAudio = audioEl;
       currentCanvas = canvas;
 
+      // Track info
+      const track = playlist[index];
+      trackInfo.textContent = `Playing: ${track.title}`;
+
+      // Progress update
+      audioEl.ontimeupdate = () => {
+        const pct = (audioEl.currentTime / (audioEl.duration || 1)) * 100;
+        progressBar.style.width = pct + "%";
+      };
+
       const { analyser } = sources.get(audioEl);
       drawVisualizer(analyser, canvas);
 
@@ -483,6 +538,40 @@
         }
       };
     }
+
+    // Seek on progress bar click
+    progressContainer.addEventListener("click", (e) => {
+      if (!currentAudio || !currentAudio.duration) return;
+      const rect = progressContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, x / rect.width));
+      currentAudio.currentTime = pct * currentAudio.duration;
+    });
+
+    // Volume and mute
+    volumeSlider.addEventListener("input", () => {
+      const v = parseFloat(volumeSlider.value);
+      if (currentAudio) currentAudio.volume = v;
+      if (v === 0) {
+        muteBtn.textContent = "Unmute";
+      } else {
+        muteBtn.textContent = "Mute";
+      }
+    });
+
+    muteBtn.addEventListener("click", () => {
+      if (!currentAudio) return;
+      if (currentAudio.muted) {
+        currentAudio.muted = false;
+        muteBtn.textContent = "Mute";
+        volumeSlider.value = wasMuted ? wasMuted : currentAudio.volume;
+      } else {
+        wasMuted = parseFloat(volumeSlider.value);
+        currentAudio.muted = true;
+        muteBtn.textContent = "Unmute";
+        volumeSlider.value = 0;
+      }
+    });
 
     // Controls: prev/next wrap around
     prevBtn.addEventListener("click", () => {
@@ -514,7 +603,7 @@
       buildPlaylistUI();
     });
 
-    // Live theme switching
+    // Live visualizer theme switching
     themeSelector.addEventListener("change", () => {
       if (!currentAudio || !currentCanvas) return;
       const { analyser } = sources.get(currentAudio);
@@ -522,23 +611,64 @@
       drawVisualizer(analyser, currentCanvas);
     });
 
-    // Secret unlock: type "seal" to reveal notes and add Smooth Operator
+    // Theme toggle (blue <-> light)
+    themeToggle.addEventListener("click", () => {
+      const b = document.body;
+      if (b.classList.contains("blue-theme")) {
+        b.classList.remove("blue-theme");
+        b.classList.add("light-theme");
+        themeToggle.textContent = "Blue Theme";
+      } else {
+        b.classList.remove("light-theme");
+        b.classList.add("blue-theme");
+        themeToggle.textContent = "Light Theme";
+      }
+    });
+
+    // Secret unlocks: type "seal" and "sexy"
     let typed = "";
     window.addEventListener("keydown", (e) => {
-      typed += e.key.toLowerCase();
-      if (typed.length > 10) typed = typed.slice(-10);
+      const key = e.key.toLowerCase();
+      // Keyboard shortcuts
+      if (key === " ") { // spacebar for play/pause
+        e.preventDefault();
+        if (currentAudio && !currentAudio.paused) {
+          stopAll();
+          currentIndex = -1;
+          return;
+        }
+        if (currentIndex >= 0) {
+          playIndex(currentIndex);
+        } else if (playBtns.length > 0) {
+          playIndex(0);
+        }
+        return;
+      }
+      if (key === "arrowleft") { prevBtn.click(); return; }
+      if (key === "arrowright") { nextBtn.click(); return; }
 
+      // Typed unlock buffer
+      typed += key;
+      if (typed.length > 12) typed = typed.slice(-12);
+
+      // Unlock "seal" -> Smooth Operator
       if (typed.includes("seal")) {
-        // Show draggable sticky notes
         document.querySelectorAll(".sticky-note").forEach(n => {
           n.style.display = "block";
           makeDraggable(n);
         });
+        const existsSeal = playlist.some(t => t.id === secretTracks.seal.id);
+        if (!existsSeal) {
+          playlist.push(secretTracks.seal);
+          buildPlaylistUI();
+        }
+      }
 
-        // Add secret track only once
-        const exists = playlist.some(t => t.id === "smooth-audio");
-        if (!exists) {
-          playlist.push({ id: "smooth-audio", title: "Smooth Operator", src: "smooth.mp3" });
+      // Unlock "sexy" -> Sexy Back
+      if (typed.includes("sexy")) {
+        const existsSexy = playlist.some(t => t.id === secretTracks.sexy.id);
+        if (!existsSexy) {
+          playlist.push(secretTracks.sexy);
           buildPlaylistUI();
         }
       }
