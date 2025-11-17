@@ -120,7 +120,7 @@
       box-shadow: 0 0 12px #38e3be;
     }
 
-    /* Sticky notes (appear on "seal") */
+    /* Sticky notes (appear on "seal") and are draggable */
     .sticky-note {
       position: fixed;
       bottom: 100px; /* above the music bar */
@@ -131,10 +131,11 @@
       border-radius: 8px;
       box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
       font-family: "Exo 2", sans-serif;
-      cursor: pointer;
+      cursor: move; /* indicates draggable */
       z-index: 10000;
       max-width: 220px;
       display: none;
+      user-select: none;
     }
     .sticky-note#note2 { left: 240px; }
 
@@ -230,9 +231,24 @@
   </div>
 
   <!-- Modals -->
-  <div id="modal1" class="modal"><div class="modal-content"><p>Some racing thingys i like (series) are Nascar (NO ITS NOT JUST CARS GOING IN CIRCLES) F1, GT3, WEC, WRC, Endurance etc etc rx7 fc</p><button class="close-modal">Close</button></div></div>
-  <div id="modal2" class="modal"><div class="modal-content"><p>So like theres many species of seals, like the um, the um erm um species. Harp Ringed Harbor, Monk, theres more if u want to search it up</p><button class="close-modal">Close</button></div></div>
-  <div id="modal3" class="modal"><div class="modal-content"><p>niko (in my opinion) is the best seal, followed by kroshik, then yuki, then yo-chan, but all seals are COOL</p><button class="close-modal">Close</button></div></div>
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <p>Some racing thingys i like (series) are Nascar (NO ITS NOT JUST CARS GOING IN CIRCLES) F1, GT3, WEC, WRC, Endurance etc etc rx7 fc</p>
+      <button class="close-modal">Close</button>
+    </div>
+  </div>
+  <div id="modal2" class="modal">
+    <div class="modal-content">
+      <p>So like theres many species of seals, like the um, the um erm um species. Harp Ringed Harbor, Monk, theres more if u want to search it up</p>
+      <button class="close-modal">Close</button>
+    </div>
+  </div>
+  <div id="modal3" class="modal">
+    <div class="modal-content">
+      <p>niko (in my opinion) is the best seal, followed by kroshik, then yuki, then yo-chan, but all seals are COOL</p>
+      <button class="close-modal">Close</button>
+    </div>
+  </div>
 
   <!-- Audio elements -->
   <audio id="song1" src="finale.mp3" preload="auto"></audio>
@@ -276,7 +292,7 @@
       return audioCtx;
     }
 
-    // Prepare canvas pixels to match element size
+    // Prepare canvas to device ratio
     function prepareCanvas(canvas) {
       const ctx = canvas.getContext("2d");
       const ratio = window.devicePixelRatio || 1;
@@ -357,12 +373,12 @@
 
           // Radial bars
           const angleStep = (Math.PI * 2) / bufferLength;
+          const cx = canvas.width / 2;
+          const cy = canvas.height / 2;
           for (let i = 0; i < bufferLength; i++) {
             const value = freqData[i];
             const barLen = (value / 255) * (radius * 0.7); // length scaled with radius
             const angle = i * angleStep;
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2;
             const x1 = cx + Math.cos(angle) * radius;
             const y1 = cy + Math.sin(angle) * radius;
             const x2 = cx + Math.cos(angle) * (radius + barLen);
@@ -425,6 +441,7 @@
       const { analyser } = sources.get(audioEl);
       drawVisualizer(analyser, canvas);
 
+      // Auto-advance to next track
       audioEl.onended = () => {
         const next = currentIndex + 1;
         if (next < playBtns.length) {
@@ -440,6 +457,7 @@
     playBtns.forEach((btn, i) => {
       btn.addEventListener("click", () => {
         if (currentIndex === i) {
+          // Toggle off
           stopAll();
           currentIndex = -1;
         } else {
@@ -454,8 +472,12 @@
       playIndex(currentIndex - 1);
     });
     nextBtn.addEventListener("click", () => {
-      if (currentIndex < 0) playIndex(0);
-      else if (currentIndex + 1 < playBtns.length) playIndex(currentIndex + 1);
+      if (currentIndex < 0) {
+        playIndex(0);
+      } else {
+        const next = currentIndex + 1;
+        if (next < playBtns.length) playIndex(next);
+      }
     });
     shuffleBtn.addEventListener("click", () => {
       const random = Math.floor(Math.random() * playBtns.length);
@@ -547,7 +569,38 @@
   })();
   </script>
 
-  <!-- Seal follower (single instance, keeps hover interactions intact) -->
+  <!-- Draggable sticky notes -->
+  <script>
+  (() => {
+    function makeDraggable(note) {
+      let isDragging = false;
+      let offsetX = 0, offsetY = 0;
+
+      note.addEventListener("mousedown", e => {
+        isDragging = true;
+        offsetX = e.clientX - note.offsetLeft;
+        offsetY = e.clientY - note.offsetTop;
+        note.style.position = "fixed";
+        note.style.zIndex = 10001;
+      });
+
+      window.addEventListener("mousemove", e => {
+        if (!isDragging) return;
+        note.style.left = (e.clientX - offsetX) + "px";
+        note.style.top = (e.clientY - offsetY) + "px";
+      });
+
+      window.addEventListener("mouseup", () => {
+        isDragging = false;
+        note.style.zIndex = 10000;
+      });
+    }
+
+    document.querySelectorAll(".sticky-note").forEach(makeDraggable);
+  })();
+  </script>
+
+  <!-- Seal follower (single instance, respects no-animations) -->
   <script>
   (() => {
     if (document.getElementById('seal-follow')) return;
@@ -570,47 +623,15 @@
     window.addEventListener('mousemove', e => { tx = e.clientX - 25; ty = e.clientY - 25; });
     function animateSeal() {
       // Respect no-animations: stop movement but keep the element visible
-      if (document.body.classList.contains('no-animations')) {
-        requestAnimationFrame(animateSeal);
-        return;
+      if (!document.body.classList.contains('no-animations')) {
+        sx += (tx - sx) * speed;
+        sy += (ty - sy) * speed;
+        seal.style.transform = `translate3d(${sx}px, ${sy}px, 0)`;
       }
-      sx += (tx - sx) * speed;
-      sy += (ty - sy) * speed;
-      seal.style.transform = `translate3d(${sx}px, ${sy}px, 0)`;
       requestAnimationFrame(animateSeal);
     }
     animateSeal();
   })();
   </script>
-  <script>
-(() => {
-  const notes = document.querySelectorAll(".sticky-note");
-
-  notes.forEach(note => {
-    let isDragging = false;
-    let offsetX = 0, offsetY = 0;
-
-    note.addEventListener("mousedown", e => {
-      isDragging = true;
-      offsetX = e.clientX - note.offsetLeft;
-      offsetY = e.clientY - note.offsetTop;
-      note.style.position = "fixed"; // ensure fixed positioning
-      note.style.zIndex = 10001; // bring to front while dragging
-    });
-
-    window.addEventListener("mousemove", e => {
-      if (!isDragging) return;
-      note.style.left = (e.clientX - offsetX) + "px";
-      note.style.top = (e.clientY - offsetY) + "px";
-    });
-
-    window.addEventListener("mouseup", () => {
-      isDragging = false;
-      note.style.zIndex = 10000; // reset z-index
-    });
-  });
-})();
-</script>
-
 </body>
 </html>
