@@ -167,9 +167,9 @@
       // Secret tracks (unlocked via typing)
       const secretTracks = {
         seal:  { id: "smooth-audio",   title: "Smooth Operator", src: "smooth.mp3" },
-        sexy:  { id: "sexy-audio",     title: "Sexy Back",       src: "sexy.mp3" },
         depNope:    { id: "nope-audio",    title: "Nope",            src: "nope.mp3" },
         depMirrors: { id: "mirrors-audio", title: "Mirrors demo",    src: "mirror.mp3" }
+        // to add more for dep do dep(name) and then do id:(name)-audio, 
       };
 
       // Web Audio + playback state
@@ -510,12 +510,13 @@
         }
 
         // Unlock "sexy" -> Sexy Back (still supports secret unlock)
-        if (typed.includes("sexy")) {
-          if (!playlist.some(t => t.id === secretTracks.sexy.id)) {
-            playlist.push(secretTracks.sexy);
-            buildPlaylistUI();
-          }
-        }
+        // if (typed.includes("sexy")) {
+          // if (!playlist.some(t => t.id === secretTracks.sexy.id)) {
+           //  playlist.push(secretTracks.sexy);
+           //  buildPlaylistUI();
+          // }
+       // }
+        // this is for if i want to add smth later just copy paste ts later change some shi around
 
         // Unlock "dep" -> add Nope + Mirrors to current playlist
         if (typed.includes("dep")) {
@@ -527,6 +528,7 @@
           if (!playlist.some(t => t.id === secretTracks.depMirrors.id)) {
             playlist.push(secretTracks.depMirrors);
             changed = true;
+            // for dep, do copy paste the thing above but change the id yk
           }
           if (changed) buildPlaylistUI();
         }
