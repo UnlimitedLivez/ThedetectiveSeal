@@ -803,6 +803,76 @@ button.playing {
 
 })();
 </script>
+<script>
+  function fetchAndPlay(audioId, canvasId) {
+    const audioElement = document.getElementById(audioId);
+    const canvasElement = document.getElementById(canvasId);
+    const ctx = canvasElement.getContext("2d");
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(audioElement);
+    const analyser = audioCtx.createAnalyser();
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    analyser.fftSize = 32;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    let animationId;
+
+    function draw() {
+      animationId = requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(dataArray);
+
+      ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      const barWidth = (canvasElement.width / bufferLength) * 2.5;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const barHeight = dataArray[i];
+        ctx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
+        ctx.fillRect(x, canvasElement.height - barHeight / 2, barWidth, barHeight / 2);
+        x += barWidth + 1;
+      }
+    }
+
+    // Start visualizer when audio plays
+    audioElement.addEventListener("play", () => {
+      audioCtx.resume();
+      draw();
+    });
+
+    // Stop and clear visualizer when paused or ended
+    audioElement.addEventListener("pause", () => {
+      cancelAnimationFrame(animationId);
+      ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    });
+
+    audioElement.addEventListener("ended", () => {
+      cancelAnimationFrame(animationId);
+      ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    });
+  }
+
+  // Hook up buttons
+  document.querySelectorAll(".play-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const audioId = btn.dataset.audio;
+      const canvasId = btn.dataset.vis;
+      const audioElement = document.getElementById(audioId);
+
+      if (audioElement.paused) {
+        audioElement.play();
+      } else {
+        audioElement.pause();
+      }
+
+      // Initialize visualizer for this track
+      fetchAndPlay(audioId, canvasId);
+    });
+  });
+</script>
 
 
 </body>
