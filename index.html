@@ -6,7 +6,6 @@
   <title>Detectified</title>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;400;700&display=swap" rel="stylesheet" />
   <style>
-    /* Base layout */
     body {
       margin: 0;
       font-family: "Exo 2", sans-serif;
@@ -15,6 +14,7 @@
       color: black;
       cursor: url('https://i.imgur.com/4b7KkzM.png') 16 16, auto;
     }
+
     .fluidjumbo {
       background-color: #38e3be2f;
       backdrop-filter: blur(10px);
@@ -24,14 +24,16 @@
       margin: 20px auto;
       max-width: 90%;
     }
+
     .cards-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
       justify-items: center;
       padding: 10px;
-      margin-bottom: 220px; /* space for fixed music card */
+      margin-bottom: 180px; /* space for fixed music card */
     }
+
     .card {
       background: linear-gradient(rgba(229, 235, 234, 0.5), rgba(143, 143, 143, 0.5));
       border: 3px inset #ffffff9a;
@@ -44,15 +46,16 @@
       backdrop-filter: blur(5px);
       position: relative;
     }
+
     .img-wrap { display: inline-block; transition: transform 0.4s ease; }
-    .img-wrap:hover { transform: rotate(360deg) scale(1.1); } /* keep hover even in no-animations mode */
+    .img-wrap:hover { transform: rotate(360deg) scale(1.1); }
     .card img { width: 200px; height: 200px; border-radius: 30px; display: block; }
 
     button {
       display: block;
-      margin: 8px auto;
-      border-radius: 25px;
-      padding: 8px 20px;
+      margin: 6px auto;
+      border-radius: 20px;
+      padding: 6px 14px;
       border: 2px solid #38e3be;
       background: rgba(255, 255, 255, 0.2);
       cursor: pointer;
@@ -61,55 +64,51 @@
     button:hover { transform: scale(1.05); box-shadow: 0 0 15px #38e3be; }
     button.playing { box-shadow: 0 0 20px #38e3be; }
 
-    /* Music card pinned to bottom */
-    /* Music card pinned to bottom, compact height */
-.card.music {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  max-width: none;
-  border-radius: 0;
-  box-shadow: 0 -2px 20px #38e3be;
-  z-index: 9999;
-  padding: 6px 10px;   /* tighter padding */
-  max-height: 160px;   /* shorter overall height */
-  overflow-y: auto;    /* scroll if content exceeds */
-}
+    /* Music card pinned to bottom, compact */
+    .card.music {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: none;
+      border-radius: 0;
+      box-shadow: 0 -2px 20px #38e3be;
+      z-index: 9999;
+      padding: 6px 10px;   /* compact padding */
+      max-height: 160px;   /* shorter overall height */
+      overflow-y: auto;    /* scroll if content exceeds */
+      background: linear-gradient(rgba(229, 235, 234, 0.6), rgba(143, 143, 143, 0.6));
+      backdrop-filter: blur(8px);
+    }
 
-/* Slimmer title */
-.card.music h2 {
-  margin: 0 0 4px 0;
-  font-size: 1em;
-}
+    .card.music h2 {
+      margin: 0 0 4px 0;
+      font-size: 1em;
+    }
 
-/* Visualizer canvases shorter */
-.visualizer {
-  width: 100%;
-  height: 40px;        /* reduced height */
-  display: none;
-  margin-top: 4px;
-  background: #111;
-}
+    .visualizer {
+      width: 100%;
+      height: 40px;        /* reduced height */
+      display: none;
+      margin-top: 4px;
+      background: #111;
+    }
 
-/* Controls spacing tighter */
-.controls-top {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 4px;
-}
-.controls-bottom {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-
+    .controls-top {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+    .controls-bottom {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
     }
     #themeSelector {
       border-radius: 20px;
-      padding: 6px 12px;
+      padding: 4px 10px;
       border: 2px solid #38e3be;
       background: rgba(255,255,255,0.85);
       font-family: "Exo 2", sans-serif;
@@ -117,20 +116,8 @@
       transition: 0.3s;
     }
     #themeSelector:hover { box-shadow: 0 0 10px #38e3be; }
-    .controls-bottom button {
-      border-radius: 20px;
-      padding: 6px 14px;
-      border: 2px solid #38e3be;
-      background: rgba(255,255,255,0.2);
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .controls-bottom button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px #38e3be;
-    }
 
-    /* Sticky notes (appear on "seal") and are draggable */
+    /* Sticky notes (hidden until unlock), draggable */
     .sticky-note {
       position: fixed;
       bottom: 100px; /* above the music bar */
@@ -141,7 +128,7 @@
       border-radius: 8px;
       box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
       font-family: "Exo 2", sans-serif;
-      cursor: move; /* indicates draggable */
+      cursor: move;
       z-index: 10000;
       max-width: 220px;
       display: none;
@@ -149,7 +136,7 @@
     }
     .sticky-note#note2 { left: 240px; }
 
-    /* Modal */
+    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -217,20 +204,7 @@
         </select>
       </div>
 
-      <!-- Playlist buttons + canvases ( elements declared at bottom) -->
-      <button class="play-btn" data-audio="song1" data-vis="viz1">Finale</button>
-      <canvas class="visualizer" id="viz1"></canvas>
-
-      <button class="play-btn" data-audio="song2" data-vis="viz2">Funky Town</button>
-      <canvas class="visualizer" id="viz2"></canvas>
-
-      <button class="play-btn" data-audio="song3" data-vis="viz3">Nope</button>
-      <canvas class="visualizer" id="viz3"></canvas>
-
-      <button class="play-btn" data-audio="song5" data-vis="viz5">Mirrors demo</button>
-      <canvas class="visualizer" id="viz5"></canvas>
-
-      <!-- Secret track will be injected here after typing "seal" -->
+      <!-- Playlist items will be injected here -->
 
       <div class="controls-bottom">
         <button id="prevBtn">Prev</button>
@@ -241,32 +215,11 @@
   </div>
 
   <!-- Modals -->
-  <div id="modal1" class="modal">
-    <div class="modal-content">
-      <p>Some racing thingys i like (series) are Nascar (NO ITS NOT JUST CARS GOING IN CIRCLES) F1, GT3, WEC, WRC, Endurance etc etc rx7 fc</p>
-      <button class="close-modal">Close</button>
-    </div>
-  </div>
-  <div id="modal2" class="modal">
-    <div class="modal-content">
-      <p>So like theres many species of seals, like the um, the um erm um species. Harp Ringed Harbor, Monk, theres more if u want to search it up</p>
-      <button class="close-modal">Close</button>
-    </div>
-  </div>
-  <div id="modal3" class="modal">
-    <div class="modal-content">
-      <p>niko (in my opinion) is the best seal, followed by kroshik, then yuki, then yo-chan, but all seals are COOL</p>
-      <button class="close-modal">Close</button>
-    </div>
-  </div>
+  <div id="modal1" class="modal"><div class="modal-content"><p>Some racing thingys i like (series) are Nascar (NO ITS NOT JUST CARS GOING IN CIRCLES) F1, GT3, WEC, WRC, Endurance etc etc rx7 fc</p><button class="close-modal">Close</button></div></div>
+  <div id="modal2" class="modal"><div class="modal-content"><p>So like theres many species of seals, like the um, the um erm um species. Harp Ringed Harbor, Monk, theres more if u want to search it up</p><button class="close-modal">Close</button></div></div>
+  <div id="modal3" class="modal"><div class="modal-content"><p>niko (in my opinion) is the best seal, followed by kroshik, then yuki, then yo-chan, but all seals are COOL</p><button class="close-modal">Close</button></div></div>
 
-  <!-- Audio elements -->
-  <audio id="song1" src="finale.mp3" preload="auto"></audio>
-  <audio id="song2" src="funky.mp3" preload="auto"></audio>
-  <audio id="song3" src="nope.mp3" preload="auto"></audio>
-  <audio id="song5" src="mirror.mp3" preload="auto"></audio>
-
-  <!-- Sticky notes -->
+  <!-- Sticky notes (hidden until secret unlock) -->
   <div class="sticky-note" id="note1">Made by TheDetectiveSeal</div>
   <div class="sticky-note" id="note2">i like seals</div>
 
@@ -275,23 +228,32 @@
 
   <script>
   (() => {
-    // Elements
+    // Core elements
     const playlistContainer = document.getElementById("playlist-container");
+    const controlsBottom = document.querySelector(".controls-bottom");
     const themeSelector = document.getElementById("themeSelector");
     const shuffleBtn = document.getElementById("shuffleBtn");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
-    const playBtns = Array.from(document.querySelectorAll(".play-btn"));
 
-    // Audio graph
+    // Playlist array (one source of truth)
+    let playlist = [
+      { id: "song1", title: "Finale", src: "finale.mp3" },
+      { id: "song2", title: "Funky Town", src: "funky.mp3" },
+      { id: "song3", title: "Nope", src: "nope.mp3" },
+      { id: "song5", title: "Mirrors demo", src: "mirror.mp3" }
+    ];
+
+    // Runtime state
+    let playBtns = [];
     let audioCtx = null;
-    const sources = new Map(); // audioEl -> { src, analyser }
+    const sources = new Map(); // audioEl -> { srcNode, analyser }
     let currentIndex = -1;
     let currentAudio = null;
     let currentCanvas = null;
     let drawRaf = null;
 
-    // Ensure AudioContext
+    // Ensure Web Audio context
     async function ensureCtx() {
       if (!audioCtx || audioCtx.state === "closed") {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -302,7 +264,7 @@
       return audioCtx;
     }
 
-    // Prepare canvas to device ratio
+    // Canvas helpers
     function prepareCanvas(canvas) {
       const ctx = canvas.getContext("2d");
       const ratio = window.devicePixelRatio || 1;
@@ -314,37 +276,7 @@
       return ctx;
     }
 
-    // Stop visualizer loop and hide canvases
-    function stopVisualizer() {
-      if (drawRaf) cancelAnimationFrame(drawRaf);
-      drawRaf = null;
-      document.querySelectorAll(".visualizer").forEach(c => {
-        c.style.display = "none";
-        const ctx = c.getContext("2d");
-        if (ctx) ctx.clearRect(0, 0, c.width, c.height);
-      });
-      document.querySelectorAll(".play-btn").forEach(b => b.classList.remove("playing"));
-    }
-
-    // Stop audio
-    function stopCurrentAudio() {
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.onended = null;
-      }
-      currentAudio = null;
-      currentCanvas = null;
-    }
-
-    function stopAll() {
-      stopVisualizer();
-      stopCurrentAudio();
-    }
-
-    // Visualizer drawing with themes:
-    // - Bars: standard
-    // - Circle: ring with radial bars
-    // - Wave: less aggressive amplitude
+    // Visualizer loop
     function drawVisualizer(analyser, canvas) {
       const ctx = prepareCanvas(canvas);
       const bufferLength = analyser.frequencyBinCount;
@@ -374,20 +306,21 @@
           }
         } else if (theme === "circle") {
           const radius = Math.min(canvas.width, canvas.height) / 4;
+          const cx = canvas.width / 2;
+          const cy = canvas.height / 2;
+
           // Base ring
           ctx.beginPath();
-          ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
+          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
           ctx.strokeStyle = "#38e3be";
           ctx.lineWidth = 3;
           ctx.stroke();
 
           // Radial bars
           const angleStep = (Math.PI * 2) / bufferLength;
-          const cx = canvas.width / 2;
-          const cy = canvas.height / 2;
           for (let i = 0; i < bufferLength; i++) {
             const value = freqData[i];
-            const barLen = (value / 255) * (radius * 0.7); // length scaled with radius
+            const barLen = (value / 255) * (radius * 0.7);
             const angle = i * angleStep;
             const x1 = cx + Math.cos(angle) * radius;
             const y1 = cy + Math.sin(angle) * radius;
@@ -405,7 +338,7 @@
           ctx.moveTo(0, canvas.height / 2);
           for (let i = 0; i < bufferLength; i++) {
             const x = (i / bufferLength) * canvas.width;
-            const y = canvas.height / 2 + (timeData[i] - 128) * 0.45; // smoother, less aggressive
+            const y = canvas.height / 2 + (timeData[i] - 128) * 0.45;
             ctx.lineTo(x, y);
           }
           ctx.strokeStyle = "#38e3be";
@@ -416,10 +349,94 @@
       loop();
     }
 
-    // Play by index in playlist array
+    // Stop visualization and UI highlighting
+    function stopVisualizer() {
+      if (drawRaf) cancelAnimationFrame(drawRaf);
+      drawRaf = null;
+      document.querySelectorAll(".visualizer").forEach(c => {
+        c.style.display = "none";
+        const ctx = c.getContext("2d");
+        if (ctx) ctx.clearRect(0, 0, c.width, c.height);
+      });
+      document.querySelectorAll(".play-btn").forEach(b => b.classList.remove("playing"));
+    }
+
+    function stopCurrentAudio() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.onended = null;
+      }
+      currentAudio = null;
+      currentCanvas = null;
+    }
+
+    function stopAll() {
+      stopVisualizer();
+      stopCurrentAudio();
+    }
+
+    // Build playlist UI dynamically from array
+    function buildPlaylistUI() {
+      // Remove existing buttons/canvases (keep controls)
+      const children = Array.from(playlistContainer.children);
+      children.forEach(child => {
+        if (child.classList && (child.classList.contains("play-btn") || child.classList.contains("visualizer"))) {
+          playlistContainer.removeChild(child);
+        }
+      });
+
+      playBtns = [];
+
+      // Create DOM for each track
+      playlist.forEach(track => {
+        // Ensure audio element exists
+        let audioEl = document.getElementById(track.id);
+        if (!audioEl) {
+          audioEl = document.createElement("audio");
+          audioEl.id = track.id;
+          audioEl.src = track.src;
+          audioEl.preload = "auto";
+          document.body.appendChild(audioEl);
+        }
+
+        // Button
+        const btn = document.createElement("button");
+        btn.className = "play-btn";
+        btn.dataset.audio = track.id;
+        btn.dataset.vis = "viz-" + track.id;
+        btn.textContent = track.title;
+
+        // Canvas
+        const canvas = document.createElement("canvas");
+        canvas.className = "visualizer";
+        canvas.id = "viz-" + track.id;
+
+        // Insert before controls row
+        playlistContainer.insertBefore(btn, controlsBottom);
+        playlistContainer.insertBefore(canvas, controlsBottom);
+
+        // Bind click
+        const idx = playBtns.length;
+        btn.addEventListener("click", () => {
+          if (currentIndex === idx) {
+            stopAll();
+            currentIndex = -1;
+          } else {
+            playIndex(idx);
+          }
+        });
+
+        playBtns.push(btn);
+      });
+
+      // Reset play state when rebuilding
+      stopAll();
+      currentIndex = -1;
+    }
+
+    // Playback handler by index
     async function playIndex(index) {
       await ensureCtx();
-
       if (index < 0 || index >= playBtns.length) return;
 
       const btn = playBtns[index];
@@ -429,20 +446,25 @@
       // Stop previous
       stopAll();
 
-      // Create source once
+      // Create audio graph once
       if (!sources.has(audioEl)) {
-        const src = audioCtx.createMediaElementSource(audioEl);
+        const srcNode = audioCtx.createMediaElementSource(audioEl);
         const analyser = audioCtx.createAnalyser();
         analyser.fftSize = 256;
-        src.connect(analyser);
+        srcNode.connect(analyser);
         analyser.connect(audioCtx.destination);
-        sources.set(audioEl, { src, analyser });
+        sources.set(audioEl, { srcNode, analyser });
       }
 
       // Play and visualize
       canvas.style.display = "block";
       btn.classList.add("playing");
-      try { await audioEl.play(); } catch (e) { console.error("Playback error:", e); return; }
+      try {
+        await audioEl.play();
+      } catch (e) {
+        console.error("Playback error:", e);
+        return;
+      }
 
       currentIndex = index;
       currentAudio = audioEl;
@@ -451,77 +473,48 @@
       const { analyser } = sources.get(audioEl);
       drawVisualizer(analyser, canvas);
 
-      // Auto-advance to next track
-// Auto-advance to next track, loop back to start
-audioEl.onended = () => {
-  const next = currentIndex + 1;
-  if (next < playBtns.length) {
-    playIndex(next);
-  } else {
-    // loop back to the first track
-    playIndex(0);
-  }
-};
-
-
-    // Button click handlers (playlist entries)
-    playBtns.forEach((btn, i) => {
-      btn.addEventListener("click", () => {
-        if (currentIndex === i) {
-          // Toggle off
-          stopAll();
-          currentIndex = -1;
+      // Auto-advance; loop back to start
+      audioEl.onended = () => {
+        const next = currentIndex + 1;
+        if (next < playBtns.length) {
+          playIndex(next);
         } else {
-          playIndex(i);
+          playIndex(0); // loop
         }
-      });
+      };
+    }
+
+    // Controls: prev/next wrap around
+    prevBtn.addEventListener("click", () => {
+      if (playBtns.length === 0) return;
+      if (currentIndex < 0) {
+        playIndex(playBtns.length - 1);
+      } else {
+        const prev = (currentIndex - 1 + playBtns.length) % playBtns.length;
+        playIndex(prev);
+      }
     });
 
-    // Controls: prev/next/shuffle (bottom of card)
-    prevBtn.addEventListener("click", () => {
-      if (currentIndex <= 0) return;
-      playIndex(currentIndex - 1);
-    });
     nextBtn.addEventListener("click", () => {
+      if (playBtns.length === 0) return;
       if (currentIndex < 0) {
         playIndex(0);
       } else {
-        const next = currentIndex + 1;
-        if (next < playBtns.length) playIndex(next);
+        const next = (currentIndex + 1) % playBtns.length;
+        playIndex(next);
       }
     });
+
+    // Shuffle: reorder playlist array and rebuild UI (Fisher–Yates)
     shuffleBtn.addEventListener("click", () => {
-  // Get all play buttons and their canvases
-  const items = [];
-  playBtns.forEach(btn => {
-    const canvas = document.getElementById(btn.dataset.vis);
-    items.push({ btn, canvas });
-  });
+      for (let i = playlist.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
+      }
+      buildPlaylistUI();
+    });
 
-  // Shuffle array
-  for (let i = items.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [items[i], items[j]] = [items[j], items[i]];
-  }
-
-  // Clear old order in DOM
-  const controlsBottom = document.querySelector(".controls-bottom");
-  items.forEach(({ btn, canvas }) => {
-    playlistContainer.insertBefore(btn, controlsBottom);
-    playlistContainer.insertBefore(canvas, controlsBottom);
-  });
-
-  // Update playBtns array to new order
-  playBtns.length = 0;
-  items.forEach(({ btn }) => playBtns.push(btn));
-
-  // Reset current index so playback follows new order
-  currentIndex = -1;
-  stopAll();
-});
-
-
-    // Live theme switching: re-render current visualizer with new theme
+    // Live theme switching
     themeSelector.addEventListener("change", () => {
       if (!currentAudio || !currentCanvas) return;
       const { analyser } = sources.get(currentAudio);
@@ -529,54 +522,30 @@ audioEl.onended = () => {
       drawVisualizer(analyser, currentCanvas);
     });
 
-    // Secret code: "seal" unlocks sticky notes and Smooth Operator (smooth.mp3)
+    // Secret unlock: type "seal" to reveal notes and add Smooth Operator
     let typed = "";
     window.addEventListener("keydown", (e) => {
       typed += e.key.toLowerCase();
       if (typed.length > 10) typed = typed.slice(-10);
+
       if (typed.includes("seal")) {
-        // Show sticky notes
-        document.querySelectorAll(".sticky-note").forEach(n => n.style.display = "block");
+        // Show draggable sticky notes
+        document.querySelectorAll(".sticky-note").forEach(n => {
+          n.style.display = "block";
+          makeDraggable(n);
+        });
 
-        // Add hidden track if not already present
-        if (!document.getElementById("smooth-audio")) {
-          // Create audio element
-          const audioEl = document.createElement("audio");
-          audioEl.id = "smooth-audio";
-          audioEl.src = "smooth.mp3";
-          audioEl.preload = "auto";
-          document.body.appendChild(audioEl);
-
-          // Create UI button + canvas in playlist order
-          const btn = document.createElement("button");
-          btn.className = "play-btn";
-          btn.dataset.audio = "smooth-audio";
-          btn.dataset.vis = "viz-smooth";
-          btn.textContent = "Smooth Operator";
-
-          const canvas = document.createElement("canvas");
-          canvas.className = "visualizer";
-          canvas.id = "viz-smooth";
-
-          // Insert before controls-bottom (to keep controls at bottom)
-          const controlsBottom = document.querySelector(".controls-bottom");
-          playlistContainer.insertBefore(btn, controlsBottom);
-          playlistContainer.insertBefore(canvas, controlsBottom);
-
-          // Register and wire up
-          playBtns.push(btn);
-          btn.addEventListener("click", () => {
-            const idx = playBtns.indexOf(btn);
-            if (currentIndex === idx) {
-              stopAll();
-              currentIndex = -1;
-            } else {
-              playIndex(idx);
-            }
-          });
+        // Add secret track only once
+        const exists = playlist.some(t => t.id === "smooth-audio");
+        if (!exists) {
+          playlist.push({ id: "smooth-audio", title: "Smooth Operator", src: "smooth.mp3" });
+          buildPlaylistUI();
         }
       }
     });
+
+    // Build playlist initially
+    buildPlaylistUI();
 
     // Modals
     document.querySelectorAll('.open-modal').forEach(btn => {
@@ -598,46 +567,47 @@ audioEl.onended = () => {
       }
     });
 
-    // No animations toggle: disable float/flip only; keep hovers
+    // No animations toggle
     const toggleBtn = document.getElementById('toggle-animations');
     toggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('no-animations');
     });
-  })();
-  </script>
 
-  <!-- Draggable sticky notes -->
-  <script>
-  (() => {
+    // Draggable sticky notes helper
     function makeDraggable(note) {
       let isDragging = false;
       let offsetX = 0, offsetY = 0;
 
-      note.addEventListener("mousedown", e => {
+      const onMouseDown = e => {
         isDragging = true;
         offsetX = e.clientX - note.offsetLeft;
         offsetY = e.clientY - note.offsetTop;
         note.style.position = "fixed";
         note.style.zIndex = 10001;
-      });
-
-      window.addEventListener("mousemove", e => {
+      };
+      const onMouseMove = e => {
         if (!isDragging) return;
         note.style.left = (e.clientX - offsetX) + "px";
         note.style.top = (e.clientY - offsetY) + "px";
-      });
-
-      window.addEventListener("mouseup", () => {
+      };
+      const onMouseUp = () => {
         isDragging = false;
         note.style.zIndex = 10000;
-      });
-    }
+      };
 
-    document.querySelectorAll(".sticky-note").forEach(makeDraggable);
+      // Avoid double-binding
+      note.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+
+      note.addEventListener("mousedown", onMouseDown);
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+    }
   })();
   </script>
 
-  <!-- Seal follower (single instance, respects no-animations) -->
+  <!-- Seal follower (respects no-animations) -->
   <script>
   (() => {
     if (document.getElementById('seal-follow')) return;
@@ -658,8 +628,8 @@ audioEl.onended = () => {
     let sx = 0, sy = 0, tx = 0, ty = 0;
     const speed = 0.1;
     window.addEventListener('mousemove', e => { tx = e.clientX - 25; ty = e.clientY - 25; });
+
     function animateSeal() {
-      // Respect no-animations: stop movement but keep the element visible
       if (!document.body.classList.contains('no-animations')) {
         sx += (tx - sx) * speed;
         sy += (ty - sy) * speed;
