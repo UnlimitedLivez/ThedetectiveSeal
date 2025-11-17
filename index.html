@@ -779,32 +779,7 @@ button.playing {
 })();
 </script>
 <script>
-(() => {
-  // --- Keyboard secret code to show sticky notes ---
-  const secretCode = ['s','e','a','l'];
-  let codeIndex = 0;
-
-  window.addEventListener('keydown', e => {
-    const key = e.key.toLowerCase();
-    if (key === secretCode[codeIndex]) {
-      codeIndex++;
-      if (codeIndex === secretCode.length) {
-        // Reveal sticky notes
-        document.querySelectorAll('.sticky-note').forEach(note => note.style.display = 'block');
-        codeIndex = 0; // reset code sequence
-      }
-    } else {
-      codeIndex = 0; // reset if wrong key
-    }
-  });
-
-  // --- Initially hide sticky notes for this secret feature ---
-  document.querySelectorAll('.sticky-note').forEach(note => note.style.display = 'none');
-
-})();
-</script>
-<script>
-  function fetchAndPlay(audioId, canvasId) {
+  function setupVisualizer(audioId, canvasId) {
     const audioElement = document.getElementById(audioId);
     const canvasElement = document.getElementById(canvasId);
     const ctx = canvasElement.getContext("2d");
@@ -869,10 +844,11 @@ button.playing {
     });
   });
 
-  // Initialize visualizers once (not inside button clicks)
-  fetchAndPlay("song3", "viz3"); // Nope
-  fetchAndPlay("song5", "viz5"); // Mirrors demo
+  // Initialize visualizers ONCE per track
+  setupVisualizer("song3", "viz3"); // Nope
+  setupVisualizer("song5", "viz5"); // Mirrors demo
 </script>
+
 
 
 
