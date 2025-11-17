@@ -6,769 +6,545 @@
 <title>Detectified</title>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;400;700&display=swap" rel="stylesheet" />
 <style>
-  body {
-    margin: 0;
-    font-family: "Exo 2", sans-serif;
-    background: url("https://i.imgur.com/ol1MfVj.gif") no-repeat center center fixed;
-    background-size: cover;
-    color: black;
-    cursor: url('https://i.imgur.com/4b7KkzM.png') 16 16, auto;
-  }
+body { margin: 0; font-family: "Exo 2", sans-serif; background: url("https://i.imgur.com/ol1MfVj.gif") no-repeat center center fixed; background-size: cover; color: black; cursor: url('https://i.imgur.com/4b7KkzM.png') 16 16, auto; }
 
-  /* Theme variables */
-  body.blue-theme {
-    --accent: #38e3be; /* neon teal-blue */
-    --bg-card: linear-gradient(rgba(229,235,234,0.6), rgba(143,143,143,0.6));
-  }
-  body.light-theme {
-    --accent: #0077ff; /* lighter blue */
-    --bg-card: linear-gradient(rgba(255,255,255,0.9), rgba(200,200,200,0.9));
-  }
+/* Theme variables */
+body.blue-theme { --accent: #38e3be; --bg-card: linear-gradient(rgba(229,235,234,0.6), rgba(143,143,143,0.6)); }
+body.light-theme { --accent: #0077ff; --bg-card: linear-gradient(rgba(255,255,255,0.9), rgba(200,200,200,0.9)); }
 
-  .fluidjumbo {
-    background-color: var(--accent);
-    backdrop-filter: blur(10px);
-    padding: 25px;
-    border-radius: 25px;
-    text-align: center;
-    margin: 20px auto;
-    max-width: 90%;
-    color: white;
-  }
+.fluidjumbo { background-color: var(--accent); backdrop-filter: blur(10px); padding: 25px; border-radius: 25px; text-align: center; margin: 20px auto; max-width: 90%; color: white; }
 
-  .cards-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    justify-items: center;
-    padding: 10px;
-    margin-bottom: 200px; /* space for fixed music card */
-  }
+.cards-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; justify-items: center; padding: 10px; margin-bottom: 200px; }
 
-  .card {
-    background: var(--bg-card);
-    border: 3px inset #ffffff9a;
-    border-radius: 25px;
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
-    padding: 15px;
-    box-shadow: 0 0 30px var(--accent);
-    backdrop-filter: blur(5px);
-    position: relative;
-  }
+.card { background: var(--bg-card); border: 3px inset #ffffff9a; border-radius: 25px; width: 90%; max-width: 500px; text-align: center; padding: 15px; box-shadow: 0 0 30px var(--accent); backdrop-filter: blur(5px); position: relative; }
 
-  .img-wrap { display: inline-block; transition: transform 0.4s ease; }
-  .img-wrap:hover { transform: rotate(360deg) scale(1.1); }
-  .card img { width: 200px; height: 200px; border-radius: 30px; display: block; }
+.img-wrap { display: inline-block; transition: transform 0.4s ease; }
+.img-wrap:hover { transform: rotate(360deg) scale(1.1); }
+.card img { width: 200px; height: 200px; border-radius: 30px; display: block; }
 
-  button {
-    display: block; margin: 6px auto;
-    border-radius: 20px; padding: 6px 14px;
-    border: 2px solid var(--accent);
-    background: rgba(255, 255, 255, 0.2);
-    cursor: pointer; transition: 0.3s ease;
-    color: black;
-  }
-  button:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent); }
-  button.playing { box-shadow: 0 0 20px var(--accent); }
+button { display: block; margin: 6px auto; border-radius: 20px; padding: 6px 14px; border: 2px solid var(--accent); background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: 0.3s ease; color: black; }
+button:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent); }
+button.playing { box-shadow: 0 0 20px var(--accent); }
 
-  /* Music card pinned to bottom, compact */
-  .card.music {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: none;
-    border-radius: 0;
-    box-shadow: 0 -2px 20px var(--accent);
-    z-index: 9999;
-    padding: 6px 10px;   /* compact padding */
-    max-height: 220px;   /* taller for added controls */
-    overflow-y: auto;    /* scroll if content exceeds */
-    background: var(--bg-card);
-    backdrop-filter: blur(8px);
-  }
-  .card.music h2 { margin: 0 0 4px 0; font-size: 1em; }
+/* Music card pinned to bottom */
+.card.music { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; max-width: none; border-radius: 0; box-shadow: 0 -2px 20px var(--accent); z-index: 9999; padding: 6px 10px; max-height: 220px; overflow-y: auto; background: var(--bg-card); backdrop-filter: blur(8px); }
+.card.music h2 { margin: 0 0 4px 0; font-size: 1em; }
 
-  .visualizer {
-    width: 100%;
-    height: 40px;        /* reduced height */
-    display: none;
-    margin-top: 4px;
-    background: #111;
-  }
+.visualizer { width: 100%; height: 40px; display: none; margin-top: 4px; background: #111; }
 
-  .controls-top, .controls-bottom {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin: 4px 0;
-    flex-wrap: wrap;
-  }
+.controls-top, .controls-bottom { display: flex; justify-content: center; gap: 8px; margin: 4px 0; flex-wrap: wrap; }
+#themeSelector, #volumeSlider { border-radius: 20px; padding: 4px 10px; border: 2px solid var(--accent); background: rgba(255,255,255,0.85); font-family: "Exo 2", sans-serif; cursor: pointer; transition: 0.3s; }
+#themeSelector:hover, #volumeSlider:hover { box-shadow: 0 0 10px var(--accent); }
 
-  #themeSelector, #volumeSlider {
-    border-radius: 20px; padding: 4px 10px;
-    border: 2px solid var(--accent);
-    background: rgba(255,255,255,0.85);
-    font-family: "Exo 2", sans-serif;
-    cursor: pointer; transition: 0.3s;
-  }
-  #themeSelector:hover, #volumeSlider:hover { box-shadow: 0 0 10px var(--accent); }
+/* Progress bar */
+#progressContainer { width: 90%; margin: 4px auto 6px; height: 6px; background: #ccc; border-radius: 3px; cursor: pointer; position: relative; }
+#progressBar { height: 100%; width: 0%; background: var(--accent); border-radius: 3px; }
 
-  /* Progress bar */
-  #progressContainer {
-    width: 90%; margin: 4px auto 6px;
-    height: 6px; background: #ccc;
-    border-radius: 3px; cursor: pointer;
-    position: relative;
-  }
-  #progressBar {
-    height: 100%; width: 0%;
-    background: var(--accent);
-    border-radius: 3px;
-  }
+/* Track info */
+#trackInfo { text-align: center; font-size: 0.9em; color: black; margin-bottom: 2px; }
 
-  /* Track info */
-  #trackInfo {
-    text-align: center;
-    font-size: 0.9em;
-    color: black;
-    margin-bottom: 2px;
-  }
+/* Sticky notes (hidden until unlock), draggable */
+.sticky-note { position: fixed; bottom: 100px; left: 10px; background: #fff9c4; color: #333; padding: 10px; border-radius: 8px; box-shadow: 2px 2px 8px rgba(0,0,0,0.2); font-family: "Exo 2", sans-serif; cursor: move; z-index: 10000; max-width: 220px; display: none; user-select: none; }
+.sticky-note#note2 { left: 240px; }
 
-  /* Sticky notes (hidden until unlock), draggable */
-  .sticky-note {
-    position: fixed;
-    bottom: 100px; /* above the music bar */
-    left: 10px;
-    background: #fff9c4;
-    color: #333;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-    font-family: "Exo 2", sans-serif;
-    cursor: move;
-    z-index: 10000;
-    max-width: 220px;
-    display: none;
-    user-select: none;
-  }
-  .sticky-note#note2 { left: 240px; }
+/* Modals */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); justify-content: center; align-items: center; }
+.modal-content { background: white; padding: 20px; border-radius: 15px; max-width: 420px; }
 
-  /* Modals */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    max-width: 420px;
-  }
+/* No animations toggle */
+.no-animations .card { animation: none !important; transition: none !important; }
+.no-animations .card.flip { transform: none !important; }
 
-  /* No animations toggle: disable float/flip only, keep hover effects */
-  .no-animations .card { animation: none !important; transition: none !important; }
-  .no-animations .card.flip { transform: none !important; }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .cards-container { grid-template-columns: 1fr; }
-    .card img { width: 150px; height: 150px; }
-  }
+/* Responsive */
+@media (max-width: 768px) {
+  .cards-container { grid-template-columns: 1fr; }
+  .card img { width: 150px; height: 150px; }
+}
 </style>
 </head>
 <body class="blue-theme">
-  <div class="fluidjumbo">
-    <h1>The (maybe detective) seal's portfolio</h1>
-    <p>About me is below</p>
+<div class="fluidjumbo">
+  <h1>The (maybe detective) seal's portfolio</h1>
+  <p>About me is below</p>
+</div>
+
+<div class="cards-container">
+  <div class="card race">
+    <h2>Racing / Driving / Cars</h2>
+    <p>I like going racing like vroom vroom.</p>
+    <div class="img-wrap"><img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Global_MX-5_Cup_car_-_Tokyo_Auto_Salon_2015.jpg" alt="car"></div>
+    <button class="open-modal" data-modal="modal1">Racing series I like</button>
   </div>
 
-  <div class="cards-container">
-    <div class="card race">
-      <h2>Racing / Driving / Cars</h2>
-      <p>I like going racing like vroom vroom.</p>
-      <div class="img-wrap"><img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Global_MX-5_Cup_car_-_Tokyo_Auto_Salon_2015.jpg" alt="car"></div>
-      <button class="open-modal" data-modal="modal1">Racing series I like</button>
-    </div>
-
-    <div class="card seal">
-      <h2>Seals</h2>
-      <p>If you can't tell, I like seals :)</p>
-      <div class="img-wrap"><img src="niko.webp" alt="seal"></div>
-      <button class="open-modal" data-modal="modal2">Seals of choosing</button>
-    </div>
-
-    <div class="card seal2">
-      <h2>Seal 2</h2>
-      <p>Seals and seals and seals...</p>
-      <div class="img-wrap"><img src="niko.webp" alt="seal2"></div>
-      <button class="open-modal" data-modal="modal3">Seals :)</button>
-    </div>
+  <div class="card seal">
+    <h2>Seals</h2>
+    <p>If you can't tell, I like seals :)</p>
+    <div class="img-wrap"><img src="niko.webp" alt="seal"></div>
+    <button class="open-modal" data-modal="modal2">Seals of choosing</button>
   </div>
 
-  <!-- Music card pinned to bottom -->
-  <div class="card music">
-    <h2>Music</h2>
+  <div class="card seal2">
+    <h2>Seal 2</h2>
+    <p>Seals and seals and seals...</p>
+    <div class="img-wrap"><img src="niko.webp" alt="seal2"></div>
+    <button class="open-modal" data-modal="modal3">Seals :)</button>
+  </div>
 
-    <!-- Track info and progress -->
-    <div id="trackInfo"></div>
-    <div id="progressContainer"><div id="progressBar"></div></div>
+  <!-- New: image-only Niko card -->
+  <div class="card niko-card">
+    <h2>Niko</h2>
+    <div class="img-wrap"><img src="niko.webp" alt="Niko"></div>
+  </div>
+</div>
 
-    <div id="playlist-container">
-      <div class="controls-top">
-        <select id="themeSelector" title="Visualizer theme">
-          <option value="bars">Bars</option>
-          <option value="circle">Circle</option>
-          <option value="wave">Wave</option>
-        </select>
+<!-- Music card pinned to bottom -->
+<div class="card music">
+  <h2>Music</h2>
+  <div id="trackInfo"></div>
+  <div id="progressContainer"><div id="progressBar"></div></div>
 
+  <div id="playlist-container">
+    <div class="controls-top">
+      <select id="themeSelector" title="Visualizer theme">
+        <option value="bars">Bars</option>
+        <option value="circle">Circle</option>
+        <option value="wave">Wave</option>
+      </select>
+      <!-- Group volume + mute together -->
+      <div style="display:flex;gap:6px;align-items:center;">
         <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1" />
         <button id="muteBtn">Mute</button>
       </div>
+    </div>
 
-      <!-- Playlist items will be injected here -->
-
-      <div class="controls-bottom">
-        <button id="prevBtn">Prev</button>
-        <button id="nextBtn">Next</button>
-        <button id="shuffleBtn">Shuffle</button>
-        <button id="themeToggle">Toggle Theme</button>
-      </div>
+    <!-- Playlist items injected here -->
+    <div class="controls-bottom">
+      <button id="prevBtn">Prev</button>
+      <button id="nextBtn">Next</button>
+      <button id="shuffleBtn">Shuffle</button>
+      <button id="themeToggle">Toggle Theme</button>
     </div>
   </div>
+</div>
 
-  <!-- Modals -->
-  <div id="modal1" class="modal"><div class="modal-content"><p>Some racing thingys i like (series) are Nascar (NO ITS NOT JUST CARS GOING IN CIRCLES) F1, GT3, WEC, WRC, Endurance etc etc rx7 fc</p><button class="close-modal">Close</button></div></div>
-  <div id="modal2" class="modal"><div class="modal-content"><p>So like theres many species of seals, like the um, the um erm um species. Harp Ringed Harbor, Monk, theres more if u want to search it up</p><button class="close-modal">Close</button></div></div>
-  <div id="modal3" class="modal"><div class="modal-content"><p>niko (in my opinion) is the best seal, followed by kroshik, then yuki, then yo-chan, but all seals are COOL</p><button class="close-modal">Close</button></div></div>
+<!-- Modals -->
+<div id="modal1" class="modal"><div class="modal-content"><p>Some racing thingys i like (series) are Nascar (NO ITS NOT JUST CARS GOING IN CIRCLES) F1, GT3, WEC, WRC, Endurance etc etc rx7 fc</p><button class="close-modal">Close</button></div></div>
+<div id="modal2" class="modal"><div class="modal-content"><p>So like theres many species of seals, like the um, the um erm um species. Harp Ringed Harbor, Monk, theres more if u want to search it up</p><button class="close-modal">Close</button></div></div>
+<div id="modal3" class="modal"><div class="modal-content"><p>niko (in my opinion) is the best seal, followed by kroshik, then yuki, then yo-chan, but all seals are COOL</p><button class="close-modal">Close</button></div></div>
 
-  <!-- Sticky notes (hidden until secret unlock) -->
-  <div class="sticky-note" id="note1">Made by TheDetectiveSeal</div>
-  <div class="sticky-note" id="note2">i like seals</div>
+<!-- Sticky notes (hidden until secret unlock) -->
+<div class="sticky-note" id="note1">Made by TheDetectiveSeal</div>
+<div class="sticky-note" id="note2">i like seals</div>
 
-  <!-- No animations toggle -->
-  <button id="toggle-animations" style="position:fixed;top:10px;right:10px;z-index:10001;">No animations</button>
+<!-- No animations toggle -->
+<button id="toggle-animations" style="position:fixed;top:10px;right:10px;z-index:10001;">No animations</button>
 
-  <script>
-  (() => {
-    // Core elements
-    const playlistContainer = document.getElementById("playlist-container");
-    const controlsBottom = document.querySelector(".controls-bottom");
-    const themeSelector = document.getElementById("themeSelector");
-    const shuffleBtn = document.getElementById("shuffleBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const themeToggle = document.getElementById("themeToggle");
-    const trackInfo = document.getElementById("trackInfo");
-    const progressContainer = document.getElementById("progressContainer");
-    const progressBar = document.getElementById("progressBar");
-    const volumeSlider = document.getElementById("volumeSlider");
-    const muteBtn = document.getElementById("muteBtn");
+<script>
+(() => {
+  // Core elements
+  const playlistContainer = document.getElementById("playlist-container");
+  const controlsBottom = document.querySelector(".controls-bottom");
+  const themeSelector = document.getElementById("themeSelector");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const themeToggle = document.getElementById("themeToggle");
+  const trackInfo = document.getElementById("trackInfo");
+  const progressContainer = document.getElementById("progressContainer");
+  const progressBar = document.getElementById("progressBar");
+  const volumeSlider = document.getElementById("volumeSlider");
+  const muteBtn = document.getElementById("muteBtn");
 
-    // Playlist array (one source of truth)
-    let playlist = [
-      { id: "song1", title: "Finale", src: "finale.mp3" },
-      { id: "song2", title: "Funky Town", src: "funky.mp3" },
-      { id: "song3", title: "Nope", src: "nope.mp3" },
-      { id: "song5", title: "Mirrors demo", src: "mirror.mp3" }
-    ];
+  // Playlist (initial, now includes Sexyback)
+  let playlist = [
+    { id: "song1",  title: "Finale",        src: "finale.mp3" },
+    { id: "song2",  title: "Funky Town",    src: "funky.mp3" },
+    { id: "song3",  title: "Nope",          src: "nope.mp3" },
+    { id: "song5",  title: "Mirrors demo",  src: "mirror.mp3" },
+    { id: "songSexy", title: "Sexyback",    src: "sexy.mp3" } // added
+  ];
 
-    // Secret track definitions (not added initially)
-    const secretTracks = {
-      seal: { id: "smooth-audio", title: "Smooth Operator", src: "smooth.mp3" },
-      sexy: { id: "sexy-audio", title: "Sexy Back", src: "sexy.mp3" }
+  // Secret tracks (unlocked via typing)
+  const secretTracks = {
+    seal: { id: "smooth-audio", title: "Smooth Operator", src: "smooth.mp3" },
+    sexy: { id: "sexy-audio",   title: "Sexy Back",       src: "sexy.mp3" }
+  };
+
+  // Web Audio + playback state
+  let audioCtx = null;
+  const sources = new Map(); // audioEl -> { srcNode, analyser }
+  let playBtns = [];
+  let currentIndex = -1;
+  let currentAudio = null;
+  let currentCanvas = null;
+  let drawRaf = null;
+  let wasMuted = false;
+
+  // Ensure audio context
+  async function ensureCtx() {
+    if (!audioCtx || audioCtx.state === "closed") {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === "suspended") {
+      try { await audioCtx.resume(); } catch {}
+    }
+    return audioCtx;
+  }
+
+  // Canvas helpers
+  function prepareCanvas(canvas) {
+    const ctx = canvas.getContext("2d");
+    const ratio = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    canvas.width = Math.max(1, Math.floor(w * ratio));
+    canvas.height = Math.max(1, Math.floor(h * ratio));
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    return ctx;
+  }
+
+  // Visualizer loop
+  function drawVisualizer(analyser, canvas) {
+    const ctx = prepareCanvas(canvas);
+    const bufferLength = analyser.frequencyBinCount;
+    const freqData = new Uint8Array(bufferLength);
+    const timeData = new Uint8Array(bufferLength);
+
+    function loop() {
+      drawRaf = requestAnimationFrame(loop);
+      const theme = themeSelector.value;
+      if (theme === "wave") analyser.getByteTimeDomainData(timeData);
+      else analyser.getByteFrequencyData(freqData);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (theme === "bars") {
+        const barWidth = Math.max(4, Math.floor(canvas.width / bufferLength) - 2);
+        let x = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          const h = (freqData[i] / 255) * canvas.height;
+          ctx.fillStyle = "#38e3be";
+          ctx.fillRect(x, canvas.height - h, barWidth, h);
+          x += barWidth + 2;
+        }
+      } else if (theme === "circle") {
+        const radius = Math.min(canvas.width, canvas.height) / 4;
+        const cx = canvas.width / 2, cy = canvas.height / 2;
+        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = "#38e3be"; ctx.lineWidth = 3; ctx.stroke();
+        const angleStep = (Math.PI * 2) / bufferLength;
+        for (let i = 0; i < bufferLength; i++) {
+          const value = freqData[i];
+          const barLen = (value / 255) * (radius * 0.7);
+          const angle = i * angleStep;
+          const x1 = cx + Math.cos(angle) * radius;
+          const y1 = cy + Math.sin(angle) * radius;
+          const x2 = cx + Math.cos(angle) * (radius + barLen);
+          const y2 = cy + Math.sin(angle) * (radius + barLen);
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+          ctx.strokeStyle = "#38e3be"; ctx.lineWidth = 2; ctx.stroke();
+        }
+      } else { // wave
+        ctx.beginPath(); ctx.moveTo(0, canvas.height / 2);
+        for (let i = 0; i < bufferLength; i++) {
+          const x = (i / bufferLength) * canvas.width;
+          const y = canvas.height / 2 + (timeData[i] - 128) * 0.45;
+          ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = "#38e3be"; ctx.lineWidth = 2; ctx.stroke();
+      }
+    }
+    loop();
+  }
+
+  function stopVisualizer() {
+    if (drawRaf) cancelAnimationFrame(drawRaf);
+    drawRaf = null;
+    document.querySelectorAll(".visualizer").forEach(c => {
+      c.style.display = "none";
+      const ctx = c.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, c.width, c.height);
+    });
+    document.querySelectorAll(".play-btn").forEach(b => b.classList.remove("playing"));
+  }
+
+  function stopCurrentAudio() {
+    if (currentAudio) { currentAudio.pause(); currentAudio.onended = null; }
+    currentAudio = null; currentCanvas = null;
+    trackInfo.textContent = "";
+    progressBar.style.width = "0%";
+  }
+
+  function stopAll() { stopVisualizer(); stopCurrentAudio(); }
+
+  // Build playlist UI
+  function buildPlaylistUI() {
+    const children = Array.from(playlistContainer.children);
+    children.forEach(child => {
+      if (child.classList && (child.classList.contains("play-btn") || child.classList.contains("visualizer"))) {
+        playlistContainer.removeChild(child);
+      }
+    });
+    playBtns = [];
+
+    playlist.forEach(track => {
+      let audioEl = document.getElementById(track.id);
+      if (!audioEl) {
+        audioEl = document.createElement("audio");
+        audioEl.id = track.id;
+        audioEl.src = track.src;
+        audioEl.preload = "auto";
+        document.body.appendChild(audioEl);
+      }
+      const btn = document.createElement("button");
+      btn.className = "play-btn";
+      btn.dataset.audio = track.id;
+      btn.dataset.vis = "viz-" + track.id;
+      btn.textContent = track.title;
+
+      const canvas = document.createElement("canvas");
+      canvas.className = "visualizer";
+      canvas.id = "viz-" + track.id;
+
+      playlistContainer.insertBefore(btn, controlsBottom);
+      playlistContainer.insertBefore(canvas, controlsBottom);
+
+      const idx = playBtns.length;
+      btn.addEventListener("click", () => {
+        if (currentIndex === idx) { stopAll(); currentIndex = -1; }
+        else { playIndex(idx); }
+      });
+      playBtns.push(btn);
+    });
+
+    stopAll(); currentIndex = -1;
+  }
+
+  // Playback by index
+  async function playIndex(index) {
+    await ensureCtx();
+    if (index < 0 || index >= playBtns.length) return;
+
+    const btn = playBtns[index];
+    const audioEl = document.getElementById(btn.dataset.audio);
+    const canvas = document.getElementById(btn.dataset.vis);
+
+    stopAll();
+
+    if (!sources.has(audioEl)) {
+      const srcNode = audioCtx.createMediaElementSource(audioEl);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      srcNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      sources.set(audioEl, { srcNode, analyser });
+    }
+
+    canvas.style.display = "block";
+    btn.classList.add("playing");
+    try { await audioEl.play(); } catch (e) { console.error("Playback error:", e); return; }
+
+    currentIndex = index;
+    currentAudio = audioEl;
+    currentCanvas = canvas;
+
+    const track = playlist[index];
+    trackInfo.textContent = `Playing: ${track.title}`;
+
+    audioEl.ontimeupdate = () => {
+      const pct = (audioEl.currentTime / (audioEl.duration || 1)) * 100;
+      progressBar.style.width = pct + "%";
     };
 
-    // Runtime state
-    let playBtns = [];
-    let audioCtx = null;
-    const sources = new Map(); // audioEl -> { srcNode, analyser }
-    let currentIndex = -1;
-    let currentAudio = null;
-    let currentCanvas = null;
-    let drawRaf = null;
-    let wasMuted = false;
+    const { analyser } = sources.get(audioEl);
+    drawVisualizer(analyser, canvas);
 
-    // Ensure Web Audio context
-    async function ensureCtx() {
-      if (!audioCtx || audioCtx.state === "closed") {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === "suspended") {
-        try { await audioCtx.resume(); } catch {}
-      }
-      return audioCtx;
+    audioEl.onended = () => {
+      const next = currentIndex + 1;
+      if (next < playBtns.length) playIndex(next);
+      else playIndex(0);
+    };
+  }
+
+  // Seek
+  progressContainer.addEventListener("click", (e) => {
+    if (!currentAudio || !currentAudio.duration) return;
+    const rect = progressContainer.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    currentAudio.currentTime = pct * currentAudio.duration;
+  });
+
+  // Volume + mute
+  volumeSlider.addEventListener("input", () => {
+    const v = parseFloat(volumeSlider.value);
+    if (currentAudio) currentAudio.volume = v;
+    muteBtn.textContent = v === 0 ? "Unmute" : "Mute";
+  });
+  muteBtn.addEventListener("click", () => {
+    if (!currentAudio) return;
+    if (currentAudio.muted) {
+      currentAudio.muted = false;
+      muteBtn.textContent = "Mute";
+      volumeSlider.value = wasMuted ? wasMuted : currentAudio.volume;
+    } else {
+      wasMuted = parseFloat(volumeSlider.value);
+      currentAudio.muted = true;
+      muteBtn.textContent = "Unmute";
+      volumeSlider.value = 0;
     }
+  });
 
-    // Canvas helpers
-    function prepareCanvas(canvas) {
-      const ctx = canvas.getContext("2d");
-      const ratio = window.devicePixelRatio || 1;
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      canvas.width = Math.max(1, Math.floor(w * ratio));
-      canvas.height = Math.max(1, Math.floor(h * ratio));
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      return ctx;
+  // Prev/Next
+  prevBtn.addEventListener("click", () => {
+    if (!playBtns.length) return;
+    const prev = currentIndex < 0 ? playBtns.length - 1 : (currentIndex - 1 + playBtns.length) % playBtns.length;
+    playIndex(prev);
+  });
+  nextBtn.addEventListener("click", () => {
+    if (!playBtns.length) return;
+    const next = currentIndex < 0 ? 0 : (currentIndex + 1) % playBtns.length;
+    playIndex(next);
+  });
+
+  // Shuffle: reorder playlist and rebuild
+  shuffleBtn.addEventListener("click", () => {
+    for (let i = playlist.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
     }
-
-    // Visualizer loop
-    function drawVisualizer(analyser, canvas) {
-      const ctx = prepareCanvas(canvas);
-      const bufferLength = analyser.frequencyBinCount;
-      const freqData = new Uint8Array(bufferLength);
-      const timeData = new Uint8Array(bufferLength);
-
-      function loop() {
-        drawRaf = requestAnimationFrame(loop);
-        const theme = themeSelector.value;
-
-        if (theme === "wave") {
-          analyser.getByteTimeDomainData(timeData);
-        } else {
-          analyser.getByteFrequencyData(freqData);
-        }
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (theme === "bars") {
-          const barWidth = Math.max(4, Math.floor(canvas.width / bufferLength) - 2);
-          let x = 0;
-          for (let i = 0; i < bufferLength; i++) {
-            const h = (freqData[i] / 255) * canvas.height;
-            ctx.fillStyle = "#38e3be";
-            ctx.fillRect(x, canvas.height - h, barWidth, h);
-            x += barWidth + 2;
-          }
-        } else if (theme === "circle") {
-          const radius = Math.min(canvas.width, canvas.height) / 4;
-          const cx = canvas.width / 2;
-          const cy = canvas.height / 2;
-
-          // Base ring
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-          ctx.strokeStyle = "#38e3be";
-          ctx.lineWidth = 3;
-          ctx.stroke();
-
-          // Radial bars
-          const angleStep = (Math.PI * 2) / bufferLength;
-          for (let i = 0; i < bufferLength; i++) {
-            const value = freqData[i];
-            const barLen = (value / 255) * (radius * 0.7);
-            const angle = i * angleStep;
-            const x1 = cx + Math.cos(angle) * radius;
-            const y1 = cy + Math.sin(angle) * radius;
-            const x2 = cx + Math.cos(angle) * (radius + barLen);
-            const y2 = cy + Math.sin(angle) * (radius + barLen);
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.strokeStyle = "#38e3be";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-          }
-        } else if (theme === "wave") {
-          ctx.beginPath();
-          ctx.moveTo(0, canvas.height / 2);
-          for (let i = 0; i < bufferLength; i++) {
-            const x = (i / bufferLength) * canvas.width;
-            const y = canvas.height / 2 + (timeData[i] - 128) * 0.45;
-            ctx.lineTo(x, y);
-          }
-          ctx.strokeStyle = "#38e3be";
-          ctx.lineWidth = 2;
-          ctx.stroke();
-        }
-      }
-      loop();
-    }
-
-    // Stop visualization and UI highlighting
-    function stopVisualizer() {
-      if (drawRaf) cancelAnimationFrame(drawRaf);
-      drawRaf = null;
-      document.querySelectorAll(".visualizer").forEach(c => {
-        c.style.display = "none";
-        const ctx = c.getContext("2d");
-        if (ctx) ctx.clearRect(0, 0, c.width, c.height);
-      });
-      document.querySelectorAll(".play-btn").forEach(b => b.classList.remove("playing"));
-    }
-
-    function stopCurrentAudio() {
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.onended = null;
-      }
-      currentAudio = null;
-      currentCanvas = null;
-      trackInfo.textContent = "";
-      progressBar.style.width = "0%";
-    }
-
-    function stopAll() {
-      stopVisualizer();
-      stopCurrentAudio();
-    }
-
-    // Build playlist UI dynamically from array
-    function buildPlaylistUI() {
-      // Remove existing buttons/canvases (keep controls)
-      const children = Array.from(playlistContainer.children);
-      children.forEach(child => {
-        if (child.classList && (child.classList.contains("play-btn") || child.classList.contains("visualizer"))) {
-          playlistContainer.removeChild(child);
-        }
-      });
-
-      playBtns = [];
-
-      // Create DOM for each track
-      playlist.forEach(track => {
-        // Ensure audio element exists
-        let audioEl = document.getElementById(track.id);
-        if (!audioEl) {
-          audioEl = document.createElement("audio");
-          audioEl.id = track.id;
-          audioEl.src = track.src;
-          audioEl.preload = "auto";
-          document.body.appendChild(audioEl);
-        }
-
-        // Button
-        const btn = document.createElement("button");
-        btn.className = "play-btn";
-        btn.dataset.audio = track.id;
-        btn.dataset.vis = "viz-" + track.id;
-        btn.textContent = track.title;
-
-        // Canvas
-        const canvas = document.createElement("canvas");
-        canvas.className = "visualizer";
-        canvas.id = "viz-" + track.id;
-
-        // Insert before controls row
-        playlistContainer.insertBefore(btn, controlsBottom);
-        playlistContainer.insertBefore(canvas, controlsBottom);
-
-        // Bind click
-        const idx = playBtns.length;
-        btn.addEventListener("click", () => {
-          if (currentIndex === idx) {
-            stopAll();
-            currentIndex = -1;
-          } else {
-            playIndex(idx);
-          }
-        });
-
-        playBtns.push(btn);
-      });
-
-      // Reset play state when rebuilding
-      stopAll();
-      currentIndex = -1;
-    }
-
-    // Playback handler by index
-    async function playIndex(index) {
-      await ensureCtx();
-      if (index < 0 || index >= playBtns.length) return;
-
-      const btn = playBtns[index];
-      const audioEl = document.getElementById(btn.dataset.audio);
-      const canvas = document.getElementById(btn.dataset.vis);
-
-      // Stop previous
-      stopAll();
-
-      // Create audio graph once
-      if (!sources.has(audioEl)) {
-        const srcNode = audioCtx.createMediaElementSource(audioEl);
-        const analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 256;
-        srcNode.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        sources.set(audioEl, { srcNode, analyser });
-      }
-
-      // Play and visualize
-      canvas.style.display = "block";
-      btn.classList.add("playing");
-      try {
-        await audioEl.play();
-      } catch (e) {
-        console.error("Playback error:", e);
-        return;
-      }
-
-      currentIndex = index;
-      currentAudio = audioEl;
-      currentCanvas = canvas;
-
-      // Track info
-      const track = playlist[index];
-      trackInfo.textContent = `Playing: ${track.title}`;
-
-      // Progress update
-      audioEl.ontimeupdate = () => {
-        const pct = (audioEl.currentTime / (audioEl.duration || 1)) * 100;
-        progressBar.style.width = pct + "%";
-      };
-
-      const { analyser } = sources.get(audioEl);
-      drawVisualizer(analyser, canvas);
-
-      // Auto-advance; loop back to start
-      audioEl.onended = () => {
-        const next = currentIndex + 1;
-        if (next < playBtns.length) {
-          playIndex(next);
-        } else {
-          playIndex(0); // loop
-        }
-      };
-    }
-
-    // Seek on progress bar click
-    progressContainer.addEventListener("click", (e) => {
-      if (!currentAudio || !currentAudio.duration) return;
-      const rect = progressContainer.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const pct = Math.max(0, Math.min(1, x / rect.width));
-      currentAudio.currentTime = pct * currentAudio.duration;
-    });
-
-    // Volume and mute
-    volumeSlider.addEventListener("input", () => {
-      const v = parseFloat(volumeSlider.value);
-      if (currentAudio) currentAudio.volume = v;
-      if (v === 0) {
-        muteBtn.textContent = "Unmute";
-      } else {
-        muteBtn.textContent = "Mute";
-      }
-    });
-
-    muteBtn.addEventListener("click", () => {
-      if (!currentAudio) return;
-      if (currentAudio.muted) {
-        currentAudio.muted = false;
-        muteBtn.textContent = "Mute";
-        volumeSlider.value = wasMuted ? wasMuted : currentAudio.volume;
-      } else {
-        wasMuted = parseFloat(volumeSlider.value);
-        currentAudio.muted = true;
-        muteBtn.textContent = "Unmute";
-        volumeSlider.value = 0;
-      }
-    });
-
-    // Controls: prev/next wrap around
-    prevBtn.addEventListener("click", () => {
-      if (playBtns.length === 0) return;
-      if (currentIndex < 0) {
-        playIndex(playBtns.length - 1);
-      } else {
-        const prev = (currentIndex - 1 + playBtns.length) % playBtns.length;
-        playIndex(prev);
-      }
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (playBtns.length === 0) return;
-      if (currentIndex < 0) {
-        playIndex(0);
-      } else {
-        const next = (currentIndex + 1) % playBtns.length;
-        playIndex(next);
-      }
-    });
-
-    // Shuffle: reorder playlist array and rebuild UI (Fisher–Yates)
-    shuffleBtn.addEventListener("click", () => {
-      for (let i = playlist.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
-      }
-      buildPlaylistUI();
-    });
-
-    // Live visualizer theme switching
-    themeSelector.addEventListener("change", () => {
-      if (!currentAudio || !currentCanvas) return;
-      const { analyser } = sources.get(currentAudio);
-      if (drawRaf) cancelAnimationFrame(drawRaf);
-      drawVisualizer(analyser, currentCanvas);
-    });
-
-    // Theme toggle (blue <-> light)
-    themeToggle.addEventListener("click", () => {
-      const b = document.body;
-      if (b.classList.contains("blue-theme")) {
-        b.classList.remove("blue-theme");
-        b.classList.add("light-theme");
-        themeToggle.textContent = "Blue Theme";
-      } else {
-        b.classList.remove("light-theme");
-        b.classList.add("blue-theme");
-        themeToggle.textContent = "Light Theme";
-      }
-    });
-
-    // Secret unlocks: type "seal" and "sexy"
-    let typed = "";
-    window.addEventListener("keydown", (e) => {
-      const key = e.key.toLowerCase();
-      // Keyboard shortcuts
-      if (key === " ") { // spacebar for play/pause
-        e.preventDefault();
-        if (currentAudio && !currentAudio.paused) {
-          stopAll();
-          currentIndex = -1;
-          return;
-        }
-        if (currentIndex >= 0) {
-          playIndex(currentIndex);
-        } else if (playBtns.length > 0) {
-          playIndex(0);
-        }
-        return;
-      }
-      if (key === "arrowleft") { prevBtn.click(); return; }
-      if (key === "arrowright") { nextBtn.click(); return; }
-
-      // Typed unlock buffer
-      typed += key;
-      if (typed.length > 12) typed = typed.slice(-12);
-
-      // Unlock "seal" -> Smooth Operator
-      if (typed.includes("seal")) {
-        document.querySelectorAll(".sticky-note").forEach(n => {
-          n.style.display = "block";
-          makeDraggable(n);
-        });
-        const existsSeal = playlist.some(t => t.id === secretTracks.seal.id);
-        if (!existsSeal) {
-          playlist.push(secretTracks.seal);
-          buildPlaylistUI();
-        }
-      }
-
-      // Unlock "sexy" -> Sexy Back
-      if (typed.includes("sexy")) {
-        const existsSexy = playlist.some(t => t.id === secretTracks.sexy.id);
-        if (!existsSexy) {
-          playlist.push(secretTracks.sexy);
-          buildPlaylistUI();
-        }
-      }
-    });
-
-    // Build playlist initially
     buildPlaylistUI();
+  });
 
-    // Modals
-    document.querySelectorAll('.open-modal').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.modal;
-        const m = document.getElementById(id);
-        if (m) m.style.display = 'flex';
-      });
-    });
-    document.querySelectorAll('.close-modal').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const m = btn.closest('.modal');
-        if (m) m.style.display = 'none';
-      });
-    });
-    window.addEventListener('click', ev => {
-      if (ev.target.classList.contains('modal')) {
-        ev.target.style.display = 'none';
-      }
-    });
+  // Visualizer theme switching
+  themeSelector.addEventListener("change", () => {
+    if (!currentAudio || !currentCanvas) return;
+    const { analyser } = sources.get(currentAudio);
+    if (drawRaf) cancelAnimationFrame(drawRaf);
+    drawVisualizer(analyser, currentCanvas);
+  });
 
-    // No animations toggle
-    const toggleBtn = document.getElementById('toggle-animations');
-    toggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('no-animations');
-    });
-
-    // Draggable sticky notes helper
-    function makeDraggable(note) {
-      let isDragging = false;
-      let offsetX = 0, offsetY = 0;
-
-      const onMouseDown = e => {
-        isDragging = true;
-        offsetX = e.clientX - note.offsetLeft;
-        offsetY = e.clientY - note.offsetTop;
-        note.style.position = "fixed";
-        note.style.zIndex = 10001;
-      };
-      const onMouseMove = e => {
-        if (!isDragging) return;
-        note.style.left = (e.clientX - offsetX) + "px";
-        note.style.top = (e.clientY - offsetY) + "px";
-      };
-      const onMouseUp = () => {
-        isDragging = false;
-        note.style.zIndex = 10000;
-      };
-
-      // Avoid double-binding
-      note.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-
-      note.addEventListener("mousedown", onMouseDown);
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
+  // Theme toggle
+  themeToggle.addEventListener("click", () => {
+    const b = document.body;
+    if (b.classList.contains("blue-theme")) {
+      b.classList.remove("blue-theme"); b.classList.add("light-theme");
+      themeToggle.textContent = "Blue Theme";
+    } else {
+      b.classList.remove("light-theme"); b.classList.add("blue-theme");
+      themeToggle.textContent = "Light Theme";
     }
-  })();
-  </script>
+  });
 
-  <!-- Seal follower (respects no-animations) -->
-  <script>
-  (() => {
-    if (document.getElementById('seal-follow')) return;
-    const seal = document.createElement('img');
-    seal.id = 'seal-follow';
-    seal.src = 'niko.webp';
-    seal.style.position = 'fixed';
-    seal.style.top = '0px';
-    seal.style.left = '0px';
-    seal.style.width = '50px';
-    seal.style.height = '50px';
-    seal.style.borderRadius = '50%';
-    seal.style.pointerEvents = 'none';
-    seal.style.zIndex = '10000';
-    seal.style.transform = 'translate3d(0px, 0px, 0px)';
-    document.body.appendChild(seal);
+  // Secret unlocks + shortcuts
+  let typed = "";
+  window.addEventListener("keydown", (e) => {
+    const key = e.key.toLowerCase();
 
-    let sx = 0, sy = 0, tx = 0, ty = 0;
-    const speed = 0.1;
-    window.addEventListener('mousemove', e => { tx = e.clientX - 25; ty = e.clientY - 25; });
-
-    function animateSeal() {
-      if (!document.body.classList.contains('no-animations')) {
-        sx += (tx - sx) * speed;
-        sy += (ty - sy) * speed;
-        seal.style.transform = `translate3d(${sx}px, ${sy}px, 0)`;
-      }
-      requestAnimationFrame(animateSeal);
+    // Shortcuts
+    if (key === " ") {
+      e.preventDefault();
+      if (currentAudio && !currentAudio.paused) { stopAll(); currentIndex = -1; return; }
+      if (currentIndex >= 0) playIndex(currentIndex);
+      else if (playBtns.length > 0) playIndex(0);
+      return;
     }
-    animateSeal();
-  })();
-  </script>
+    if (key === "arrowleft") { prevBtn.click(); return; }
+    if (key === "arrowright") { nextBtn.click(); return; }
+
+    // Typed buffer
+    typed += key;
+    if (typed.length > 12) typed = typed.slice(-12);
+
+    // Unlock "seal" -> Smooth Operator + show notes
+    if (typed.includes("seal")) {
+      document.querySelectorAll(".sticky-note").forEach(n => { n.style.display = "block"; makeDraggable(n); });
+      if (!playlist.some(t => t.id === secretTracks.seal.id)) {
+        playlist.push(secretTracks.seal); buildPlaylistUI();
+      }
+    }
+
+    // Unlock "sexy" -> Sexy Back (still supports secret unlock)
+    if (typed.includes("sexy")) {
+      if (!playlist.some(t => t.id === secretTracks.sexy.id)) {
+        playlist.push(secretTracks.sexy); buildPlaylistUI();
+      }
+    }
+  });
+
+  // Init
+  buildPlaylistUI();
+
+  // Modals
+  document.querySelectorAll('.open-modal').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.modal;
+      const m = document.getElementById(id);
+      if (m) m.style.display = 'flex';
+    });
+  });
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const m = btn.closest('modal') || btn.closest('.modal');
+      if (m) m.style.display = 'none';
+    });
+  });
+  window.addEventListener('click', ev => {
+    if (ev.target.classList && ev.target.classList.contains('modal')) {
+      ev.target.style.display = 'none';
+    }
+  });
+
+  // No animations toggle
+  const toggleBtn = document.getElementById('toggle-animations');
+  toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('no-animations');
+  });
+
+  // Draggable sticky notes
+  function makeDraggable(note) {
+    let isDragging = false, offsetX = 0, offsetY = 0;
+    const onMouseDown = e => { isDragging = true; offsetX = e.clientX - note.offsetLeft; offsetY = e.clientY - note.offsetTop; note.style.position = "fixed"; note.style.zIndex = 10001; };
+    const onMouseMove = e => { if (!isDragging) return; note.style.left = (e.clientX - offsetX) + "px"; note.style.top = (e.clientY - offsetY) + "px"; };
+    const onMouseUp = () => { isDragging = false; note.style.zIndex = 10000; };
+    note.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  }
+})();
+</script>
+
+<!-- Seal follower (respects no-animations) -->
+<script>
+(() => {
+  if (document.getElementById('seal-follow')) return;
+  const seal = document.createElement('img');
+  seal.id = 'seal-follow';
+  seal.src = 'niko.webp';
+  seal.style.position = 'fixed';
+  seal.style.top = '0px';
+  seal.style.left = '0px';
+  seal.style.width = '50px';
+  seal.style.height = '50px';
+  seal.style.borderRadius = '50%';
+  seal.style.pointerEvents = 'none';
+  seal.style.zIndex = '10000';
+  seal.style.transform = 'translate3d(0px, 0px, 0px)';
+  document.body.appendChild(seal);
+
+  let sx = 0, sy = 0, tx = 0, ty = 0;
+  const speed = 0.1;
+
+  window.addEventListener('mousemove', e => { tx = e.clientX - 25; ty = e.clientY - 25; });
+
+  function animateSeal() {
+    if (!document.body.classList.contains('no-animations')) {
+      sx += (tx - sx) * speed;
+      sy += (ty - sy) * speed;
+      seal.style.transform = `translate3d(${sx}px, ${sy}px, 0)`;
+    }
+    requestAnimationFrame(animateSeal);
+  }
+  animateSeal();
+})();
+</script>
 </body>
 </html>
